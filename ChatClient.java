@@ -146,7 +146,16 @@ public class ChatClient extends javax.swing.JFrame {
         }
 
         public void userlistMouseClicked(java.awt.event.MouseEvent evt) {
-            selectedusers=new ArrayList();
+
+            
+                 if (evt.getClickCount() == 2) {
+             int index = userlist.locationToIndex(evt.getPoint());
+             String anick=skUserListModel.getElementAt(index).toString();
+             if (anick.compareTo(skMyNick+"\n")!=0)
+                if (findTab(getUser(anick))==null)
+                    addTab(anick,-1);}//chatid is -1 while it is not assigned from server yet
+
+             selectedusers=new ArrayList();
             if(evt.getButton()==3){
                 java.lang.Object[] indicies=userlist.getSelectedValues();
                 for (int i=0;i<indicies.length;i++)
@@ -564,10 +573,10 @@ public class ChatClient extends javax.swing.JFrame {
             //if (index>0)
           boolean found=false;
           for (int i=0;i<chatusers.size();i++){
-              if (chatusers.get(i).toString().compareTo(value.toString().trim())==0) found=true;
+              if (chatusers.get(i).toString().compareTo(value.toString().trim())==0) {found=true;break;}
           }
           if (found){
-              setBackground(isSelected ? Color.red : Color.white);
+              setBackground(isSelected ? Color.blue : Color.white);
               setForeground(isSelected ? Color.white : Color.gray);
           }else{
                 setBackground(isSelected ? Color.red : Color.white);
