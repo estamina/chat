@@ -57,7 +57,7 @@ public class ChatClient extends javax.swing.JFrame {
                     } else out.write("0\n");
                 }
                 out.write(chatname+"\n");
-                
+
                 out.write("1\n"+skMyNick+"> "+field.getText()+"\n");
                 out.flush();
                 //Vymazanie obsahu pola skMsgField
@@ -95,9 +95,10 @@ public class ChatClient extends javax.swing.JFrame {
             chatlist = new javax.swing.JList();
             field= new javax.swing.JTextField();
             userlistmodel=new javax.swing.DefaultListModel();
+            userscellrenderer=new UsersCellRenderer();
             chatlistmodel=new javax.swing.DefaultListModel();
             //tb.text.setText("daco");
-            
+
             split1.setDividerLocation(375);
             split1.setDividerSize(15);
             split1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
@@ -107,11 +108,12 @@ public class ChatClient extends javax.swing.JFrame {
             scroll1.setViewportView(text);
 
             split2.setLeftComponent(scroll1);
-           
+
             split3.setDividerLocation(180);
             split3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
             userlist.setModel(skUserListModel);
-            
+
+            userlist.setCellRenderer(userscellrenderer);
             userlist.setFixedCellHeight(10);
             userlist.setFixedCellWidth(10);
 
@@ -138,7 +140,7 @@ public class ChatClient extends javax.swing.JFrame {
                     fieldActionPerformed(evt);
                 }
             });
-            
+
             split1.setRightComponent(field);
 
         }
@@ -147,13 +149,15 @@ public class ChatClient extends javax.swing.JFrame {
             selectedusers=new ArrayList();
             if(evt.getButton()==3){
                 java.lang.Object[] indicies=userlist.getSelectedValues();
-                for (int i=0;i<indicies.length;i++) 
+                for (int i=0;i<indicies.length;i++)
                     //System.out.println("selected " + indicies[i].toString());
                     selectedusers.add(getUser(indicies[i].toString()));
             }
         }
 
         private ArrayList selectedusers=null;
+
+        private UsersCellRenderer userscellrenderer;
      }
 
     //Streamy na komunikaciu
@@ -312,18 +316,18 @@ public class ChatClient extends javax.swing.JFrame {
           //  skTextArea.append(nick+"\n");
             skUserListModel.addElement(nick+"\n");
             skUserList.ensureIndexIsVisible(skUserListModel.size());
-  /*  
+  /*
             String cell=null;
             boolean t1=false,t2=false;
             javax.swing.JLabel l1=(javax.swing.JLabel)(skUserList.getCellRenderer()).getListCellRendererComponent(skUserList,cell,skUserListModel.size(),t1,t2);
             java.awt.Rectangle g1=l1.getBounds();
             skTextArea.append("xy "+g1.x+" "+g1.y+" "+g1.width+" "+g1.height+"\n");
-    */        
+    */
             java.awt.Rectangle g1=skRenderer.getBounds();
             skTextArea.append(skRenderer.getFont().getFontName()+" xy "+g1.x+" "+g1.y+" "+g1.width+" "+g1.height+"\n");
       //   skUserList.updateUI();
         }
-        
+
         for (Enumeration e = skUserListModel.elements() ; e.hasMoreElements() ;) {
             skTextArea.append(e.nextElement()+"\n");
         }
@@ -348,7 +352,7 @@ public class ChatClient extends javax.swing.JFrame {
         public void run(){
             int id;
             tab atb;
-    
+
             try{
                 String line;
                 //Precitam riadok zo standardneho vstupu
@@ -364,7 +368,7 @@ public class ChatClient extends javax.swing.JFrame {
                     case 1:
          //               skTextArea.append(line.substring(1));
                         skGlobalUsers.clear();
-     
+
                         int users=new Integer(in.readLine()).intValue();
                         for (int i=0; i<users;i++) {
                             skUser user=new skUser();
@@ -419,12 +423,12 @@ public class ChatClient extends javax.swing.JFrame {
                         atb=findTab(id);
                         atb.chatname=in.readLine();
                         atb.chattobe="";
-                        
+
                         int ind=jTabbedPane1.indexOfComponent(atb.split1);
                         jTabbedPane1.setTitleAt(ind,atb.chatname);
                         //atb.split1.setTitleAt(ind,atb.chatname);
-                        
-                        
+
+
                         break;
                     default:
 //                        while ((line = in.readLine()) != null)
@@ -458,7 +462,7 @@ public class ChatClient extends javax.swing.JFrame {
     private String skMyLogin;
     private String skMyNick;
     private static LinkedList tabList;
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -476,29 +480,29 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.DefaultListModel skChatListModel;
 
     public void addTab(String name, int lid) {
- 
+
 
             tab tb=new tab();
-            
+
             tb.initComponents();
             //tb.chatname=name;
             tb.chattobe=getUser(name);
             tb.chatid=lid;
             System.out.println(tb.chattobe);
-            
+
             //        skGlobalUsers
             jTabbedPane1.addTab(name,tb.split1);
-            
-            
-            
+
+
+
             tb.userlistmodel.removeAllElements();
             for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
                 tb.userlistmodel.addElement(((skUser)i.next()).nick);
             }
-            
-            
+
+
             tabList.add(tb);
-        
+
     }
 
     private LinkedList skGlobalUsers=new LinkedList();
@@ -531,7 +535,7 @@ public class ChatClient extends javax.swing.JFrame {
             if ((ltab).chatid==lid)break;
             else ltab=null;
         }
-        
+
         return ltab;
     }
 
@@ -540,18 +544,18 @@ public class ChatClient extends javax.swing.JFrame {
         for (Iterator i=tabList.iterator();i.hasNext();){
             ltab=(tab)i.next();
             if ((ltab).chattobe.compareTo(user)==0){
-                System.out.println(user+" found "+ltab.chattobe);                
+                System.out.println(user+" found "+ltab.chattobe);
                 break;
             }
             else ltab=null;
         }
-        
+
         return ltab;
     }
 
-    public class MyCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
+    public class UsersCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
       public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            //if (index>0) 
+            //if (index>0)
             if (value.toString().compareTo("nick_D\n")==0)setText(value.toString()+" tento");
             else    setText(value.toString());
             if (index==2) setBackground(java.awt.Color.MAGENTA);
@@ -560,19 +564,19 @@ public class ChatClient extends javax.swing.JFrame {
             return this;
         }
 
-        public MyCellRenderer() {
-         setOpaque(true);            
+        public UsersCellRenderer() {
+         setOpaque(true);
         }
     }
 
-    private MyCellRenderer skRenderer=new MyCellRenderer();
+    private UsersCellRenderer1 skRenderer=new UsersCellRenderer1();
 
-    public  class MyCellRenderer1 extends javax.swing.DefaultListCellRenderer  {
-        public MyCellRenderer1() {
+    public  class UsersCellRenderer1 extends javax.swing.DefaultListCellRenderer  {
+        public UsersCellRenderer1() {
             super();
          //   setFont(java.awt.Font.ITALIC);
         }
-        
+
     }
 
 
