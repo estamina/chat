@@ -23,7 +23,7 @@ public class ChatClient extends javax.swing.JFrame {
     //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
 
-    class tab{
+    class skTab{
             javax.swing.JScrollPane scroll1, scroll2, scroll3;
             javax.swing.JTextArea text;
             javax.swing.JSplitPane split1, split2, split3;
@@ -172,7 +172,7 @@ public class ChatClient extends javax.swing.JFrame {
                  String anick=skUserListModel.getElementAt(index).toString();
                  if (anick.compareTo(skMyNick+"\n")!=0)
                     if (findTab(getUser(anick))==null){
-                     tab atb=addTab(anick,-1);
+                     skTab atb=addTab(anick,-1);
                      //jTabbedPane1.setSelectedIndex(jTabbedPane1.getTabCount()-1);
                      jTabbedPane1.setSelectedComponent(atb.split1);
                     }
@@ -231,18 +231,9 @@ public class ChatClient extends javax.swing.JFrame {
             System.out.println("Chyba3 "+e.getMessage());
             System.exit(1);
         }
-/*
-        java.awt.Font f=skRenderer.getFont();
-        f.getName();
-        skRenderer.setFont(f);
- */
-        skRenderer.setBackground(java.awt.Color.CYAN);
         initComponents();
-        //jSplitPane1.requestFocus();
-        //skTextArea.requestFocus();
         tabList = new LinkedList();
         new ReceiveThread().start();
-        //updateUserList();
     }
 
     /** This method is called from within the constructor to
@@ -295,7 +286,6 @@ public class ChatClient extends javax.swing.JFrame {
         skUserListModel=new javax.swing.DefaultListModel();
         skUserList.setModel(skUserListModel
         );
-        skUserList.setCellRenderer(skRenderer);
         skUserList.setFixedCellHeight(10);
         skUserList.setFixedCellWidth(10);
         skUserList.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -363,7 +353,7 @@ public class ChatClient extends javax.swing.JFrame {
                  String anick=skUserListModel.getElementAt(index).toString();
                  if (anick.compareTo(skMyNick+"\n")!=0)
                     if (findTab(getUser(anick))==null){
-                     tab atb=addTab(anick,-1);
+                     skTab atb=addTab(anick,-1);
                      //jTabbedPane1.setSelectedIndex(jTabbedPane1.getTabCount()-1);
                      jTabbedPane1.setSelectedComponent(atb.split1);
                     }
@@ -383,19 +373,8 @@ public class ChatClient extends javax.swing.JFrame {
         skTextArea.setText("");
         for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
             String nick=((skUser)i.next()).nick;
-          //  skTextArea.append(nick+"\n");
             skUserListModel.addElement(nick+"\n");
             skUserList.ensureIndexIsVisible(skUserListModel.size());
-  /*
-            String cell=null;
-            boolean t1=false,t2=false;
-            javax.swing.JLabel l1=(javax.swing.JLabel)(skUserList.getCellRenderer()).getListCellRendererComponent(skUserList,cell,skUserListModel.size(),t1,t2);
-            java.awt.Rectangle g1=l1.getBounds();
-            skTextArea.append("xy "+g1.x+" "+g1.y+" "+g1.width+" "+g1.height+"\n");
-    */
-            java.awt.Rectangle g1=skRenderer.getBounds();
-            skTextArea.append(skRenderer.getFont().getFontName()+" xy "+g1.x+" "+g1.y+" "+g1.width+" "+g1.height+"\n");
-      //   skUserList.updateUI();
         }
 
         for (Enumeration e = skUserListModel.elements() ; e.hasMoreElements() ;) {
@@ -421,22 +400,19 @@ public class ChatClient extends javax.swing.JFrame {
         //Metoda vykonavaneho vlakna
         public void run(){
             int id;
-            tab atb;
+            skTab atb;
 
             try{
                 String line;
-                //Precitam riadok zo standardneho vstupu
 
                     //Vypisem riadok
                 while ((line = in.readLine()) != null) {
                     while (line.compareTo(msgIntro)!=0){line = in.readLine();}
                     line = in.readLine();
                     System.out.println("msgcode:"+line);
-                    //line=in.readLine();
                 int msgCode=new Integer(line).intValue();
                 switch (msgCode){
                     case 1:
-         //               skTextArea.append(line.substring(1));
                         skGlobalUsers.clear();
 
                         int users=new Integer(in.readLine()).intValue();
@@ -451,7 +427,6 @@ public class ChatClient extends javax.swing.JFrame {
                             skGlobalUsers.add(user);
                         }
                         updateUserList();
-                            //                System.out.println(line);
                         break;
                     case 2:
                         id=new Integer(in.readLine()).intValue();
@@ -472,8 +447,8 @@ public class ChatClient extends javax.swing.JFrame {
                             if (atb==null) atb=addTab(othernick,id);
                             else atb.chatid=id;
                         }else{
-/*                            
-                                            atb.userlistmodel.removeAllElements();
+/*
+                                       atb.userlistmodel.removeAllElements();
             for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
                 atb.userlistmodel.addElement(((skUser)i.next()).nick);
             }
@@ -502,14 +477,10 @@ public class ChatClient extends javax.swing.JFrame {
 
                         int ind=jTabbedPane1.indexOfComponent(atb.split1);
                         jTabbedPane1.setTitleAt(ind,atb.chatname);
-                        //atb.split1.setTitleAt(ind,atb.chatname);
-
 
                         break;
                     default:
-//                        while ((line = in.readLine()) != null)
                             skTextArea.append("default  "+line+"\n");
-//                        skTextArea.append(line+"\n");break;
                 }
                 }
                 //Uzavriem streamy
@@ -555,28 +526,18 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.DefaultListModel skUserListModel;
     private javax.swing.DefaultListModel skChatListModel;
 
-    public tab addTab(String name, int lid) {
+    public skTab addTab(String name, int lid) {
 
 
-            tab tb=new tab();
+            skTab tb=new skTab();
 
             tb.initComponents();
-            //tb.chatname=name;
             tb.chattobe=getUser(name);
             tb.chatid=lid;
             System.out.println(tb.chattobe);
 
             //        skGlobalUsers
             jTabbedPane1.addTab(name,tb.split1);
-
-
-/*
-            tb.userlistmodel.removeAllElements();
-            for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
-                tb.userlistmodel.addElement(((skUser)i.next()).nick);
-            }
- **/
-
 
             tabList.add(tb);
             return tb;
@@ -606,10 +567,10 @@ public class ChatClient extends javax.swing.JFrame {
         return user;
     }
 
-    public tab findTab(int lid) {
-        tab ltab=null;
+    public skTab findTab(int lid) {
+        skTab ltab=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
-            ltab=(tab)i.next();
+            ltab=(skTab)i.next();
             if ((ltab).chatid==lid)break;
             else ltab=null;
         }
@@ -617,10 +578,10 @@ public class ChatClient extends javax.swing.JFrame {
         return ltab;
     }
 
-    public tab findTab(String user) {
-        tab ltab=null;
+    public skTab findTab(String user) {
+        skTab ltab=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
-            ltab=(tab)i.next();
+            ltab=(skTab)i.next();
             if ((ltab).chattobe.compareTo(user)==0){
                 System.out.println(user+" found "+ltab.chattobe);
                 break;
@@ -632,46 +593,29 @@ public class ChatClient extends javax.swing.JFrame {
     }
 
     public class UsersCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
-      public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            //if (index>0)
-          boolean found=false;
-          for (int i=0;i<chatusers.size();i++){
-              if (chatusers.get(i).toString().compareTo(value.toString().trim())==0) {found=true;break;}
-          }
-          if (found){
-              setBackground(isSelected ? Color.blue : Color.white);
-              setForeground(isSelected ? Color.white : Color.gray);
-          }else{
+        public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            boolean found=false;
+            for (int i=0;i<chatusers.size();i++){
+                if (chatusers.get(i).toString().compareTo(value.toString().trim())==0) {found=true;break;}
+            }
+            if (found){
+                setBackground(isSelected ? Color.blue : Color.white);
+                setForeground(isSelected ? Color.white : Color.gray);
+            }else{
                 setBackground(isSelected ? Color.red : Color.white);
-                setForeground(isSelected ? Color.white : Color.black);          
-          }
-          setText(value.toString());
-          /*
-            if (value.toString().compareTo("nick_D\n")==0)setText(value.toString()+" tento");
-            else    setText(value.toString());
-            if (index==2) setBackground(java.awt.Color.MAGENTA);
-            else setBackground(isSelected ? Color.red : Color.white);
-         setForeground(isSelected ? Color.white : Color.black);
-           */
+                setForeground(isSelected ? Color.white : Color.black);
+            }
+            setText(value.toString());
             return this;
         }
-
+        
         public UsersCellRenderer() {
-         setOpaque(true);
+            setOpaque(true);
         }
-
+        
         private ArrayList chatusers=new ArrayList();
     }
 
-    private UsersCellRenderer1 skRenderer=new UsersCellRenderer1();
-
-    public  class UsersCellRenderer1 extends javax.swing.DefaultListCellRenderer  {
-        public UsersCellRenderer1() {
-            super();
-         //   setFont(java.awt.Font.ITALIC);
-        }
-
-    }
 
 
 
