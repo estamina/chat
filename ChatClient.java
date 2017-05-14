@@ -44,9 +44,15 @@ public class ChatClient extends javax.swing.JFrame {
                 out.write(new Integer(chatid).toString());
                 out.write("\n");
                 if (chatid==-1){
-                out.write("1\n");
-                out.write(chattobe+"\n");
-                }else out.write("0\n\n");
+                    out.write("1\n");
+                    out.write(chattobe+"\n");
+                }else{
+                    out.write(selectedusers.size()+"\n");
+                    for (int i=0;i<selectedusers.size();i++){
+                        out.write(selectedusers.get(i).toString()+"\n");
+                    }
+                    //out.write("0\n\n");
+                }
                 out.write(chatname+"\n");
                 
                 out.write("1\n"+skMyNick+"> "+field.getText()+"\n");
@@ -102,6 +108,13 @@ public class ChatClient extends javax.swing.JFrame {
             split3.setDividerLocation(180);
             split3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
             userlist.setModel(userlistmodel);
+            
+            userlist.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    userlistMouseClicked(evt);
+                }
+            });
+
             scroll2.setViewportView(userlist);
 
             split3.setLeftComponent(scroll2);
@@ -123,6 +136,18 @@ public class ChatClient extends javax.swing.JFrame {
             split1.setRightComponent(field);
 
         }
+
+        public void userlistMouseClicked(java.awt.event.MouseEvent evt) {
+            selectedusers=new ArrayList();
+            if(evt.getButton()==3){
+                java.lang.Object[] indicies=userlist.getSelectedValues();
+                for (int i=0;i<indicies.length;i++) 
+                    //System.out.println("selected " + indicies[i].toString());
+                    selectedusers.add(getUser(indicies[i].toString()));
+            }
+        }
+
+        private ArrayList selectedusers=null;
      }
 
     //Streamy na komunikaciu
