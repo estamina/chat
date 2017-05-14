@@ -5,6 +5,7 @@
  */
 
 package chat;
+import java.awt.event.FocusEvent;
 import java.net.*;
 import java.awt.*;
 import java.util.*;
@@ -102,9 +103,19 @@ public class ChatClient extends javax.swing.JFrame {
             split1.setDividerLocation(375);
             split1.setDividerSize(15);
             split1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        split1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tabGotFocus(evt);//jSplitPane1FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                split1FocusLost(evt);
+            }
+        });
             split2.setDividerLocation(500);
             text.setColumns(20);
             text.setRows(5);
+            text.setEditable(false);
             scroll1.setViewportView(text);
 
             split2.setLeftComponent(scroll1);
@@ -142,7 +153,15 @@ public class ChatClient extends javax.swing.JFrame {
             });
 
             split1.setRightComponent(field);
-
+/*
+            split1.addFocusListener(new java.awt.event.FocusListener() {
+                public void focusGained(FocusEvent e) {
+                    tabGotFocus(e);
+                }
+                public void focusLost(FocusEvent e) {
+                }
+            });
+*/
         }
 
         public void userlistMouseClicked(java.awt.event.MouseEvent evt) {
@@ -174,7 +193,15 @@ public class ChatClient extends javax.swing.JFrame {
 
         public void tabGotFocus(java.awt.event.FocusEvent evt) {
             int id=evt.getID();
+            System.out.println("event "+id);
             if (id==java.awt.event.FocusEvent.FOCUS_GAINED) 
+                jTabbedPane1.setBackgroundAt(jTabbedPane1.indexOfComponent(split1),Color.gray);
+        }
+
+        public void split1FocusLost(java.awt.event.FocusEvent evt) {
+            int id=evt.getID();
+            System.out.println("event "+id);
+            if (id==java.awt.event.FocusEvent.FOCUS_LOST) 
                 jTabbedPane1.setBackgroundAt(jTabbedPane1.indexOfComponent(split1),Color.gray);
         }
      }
@@ -211,6 +238,8 @@ public class ChatClient extends javax.swing.JFrame {
  */
         skRenderer.setBackground(java.awt.Color.CYAN);
         initComponents();
+        //jSplitPane1.requestFocus();
+        //skTextArea.requestFocus();
         tabList = new LinkedList();
         new ReceiveThread().start();
         //updateUserList();
@@ -238,10 +267,20 @@ public class ChatClient extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(skMyNick);
         setResizable(false);
+        jTabbedPane1.setFocusCycleRoot(true);
         jTabbedPane1.setVerifyInputWhenFocusTarget(false);
         jSplitPane1.setDividerLocation(375);
         jSplitPane1.setDividerSize(15);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jSplitPane1FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jSplitPane1FocusLost(evt);
+            }
+        });
+
         jSplitPane2.setDividerLocation(500);
         skTextArea.setColumns(20);
         skTextArea.setEditable(false);
@@ -308,6 +347,14 @@ public class ChatClient extends javax.swing.JFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jSplitPane1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSplitPane1FocusLost
+// TODO add your handling code here:
+    }//GEN-LAST:event_jSplitPane1FocusLost
+
+    private void jSplitPane1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSplitPane1FocusGained
+// TODO add your handling code here:
+    }//GEN-LAST:event_jSplitPane1FocusGained
 
     private void skUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skUserListMouseClicked
 
