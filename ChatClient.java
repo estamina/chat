@@ -192,17 +192,19 @@ public class ChatClient extends javax.swing.JFrame {
                     case 0x01:
          //               skTextArea.append(line.substring(1));
                         skListModel.removeAllElements();
-                        while ((line = in.readLine()) != null) 
-                            skListModel.addElement(line+"\n");
+                        char num=(char)in.read();in.mark(1);
+                        char size=(char)in.read();in.mark(1);
+                        //while ((char size = (char)in.read()) != null) 
+                        char cbuf[]=new char[size];
+                        in.read( cbuf);
+                            skListModel.addElement(cbuf);
                         break;
                         
                     case 0x00:
-                        while ((line = in.readLine()) != null) 
-                            skTextArea.append(line+"\n");
+                        while ((line = in.readLine()) != null)                             skTextArea.append(line+"\n");
                         break;
                     default:
-                        while ((line = in.readLine()) != null) 
-                            skTextArea.append(line+"\n");
+                        while ((line = in.readLine()) != null)                             skTextArea.append(line+"\n");
 //                        skTextArea.append(line+"\n");break;
                 }
 
