@@ -167,7 +167,7 @@ public class ChatClient extends javax.swing.JFrame {
      private void enterMsg(){
         try{
             //Odoslanie spravy
-            out.write("\0"+skMyLogin+"> "+skMsgField.getText()+"\n");
+            out.write("0\n1\n"+skMyLogin+"> "+skMsgField.getText()+"\n");
             out.flush();
             //Vymazanie obsahu pola skMsgField
             
@@ -186,28 +186,34 @@ public class ChatClient extends javax.swing.JFrame {
                 //Precitam riadok zo standardneho vstupu
                 
                     //Vypisem riadok
-                    line=in.readLine();
+                while ((line = in.readLine()) != null) {
+                    //line=in.readLine();
                 int msgCode=new Integer(line).intValue();
                 switch (msgCode){
                     case 1:
          //               skTextArea.append(line.substring(1));
-             //           skListModel.removeAllElements();
+                        skListModel.removeAllElements();
                         int users=new Integer(in.readLine()).intValue();
-                        for (int i=0; i<users;i++) {                            line=in.readLine();                                       //skListModel.addElement(line+"\n");                        
+                        for (int i=0; i<users;i++) {
+                            line=in.readLine();                                       
+                            skListModel.addElement(line+"\n");                        
                         }
-                                            System.out.println(line);
-break;
+                            //                System.out.println(line);
+                        break;
                         
                     case 0:
-                        while ((line = in.readLine()) != null) 
+                        int lines=new Integer(in.readLine()).intValue();
+                        for (int i=0; i<lines;i++) {
+                            line=in.readLine();                                       
                             skTextArea.append(line+"\n");
+                        }
                         break;
                     default:
-                        while ((line = in.readLine()) != null) 
+//                        while ((line = in.readLine()) != null) 
                             skTextArea.append("default  "+line+"\n");
 //                        skTextArea.append(line+"\n");break;
                 }
-
+                }
                 //Uzavriem streamy
                 in.close();
                 out.close();
