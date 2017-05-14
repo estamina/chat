@@ -47,11 +47,12 @@ public class ChatClient extends javax.swing.JFrame {
                     out.write("1\n");
                     out.write(chattobe+"\n");
                 }else{
-                    out.write(selectedusers.size()+"\n");
-                    for (int i=0;i<selectedusers.size();i++){
-                        out.write(selectedusers.get(i).toString()+"\n");
-                    }
-                    //out.write("0\n\n");
+                    if (selectedusers!=null){
+                        out.write(selectedusers.size()+"\n");
+                        for (int i=0;i<selectedusers.size();i++){
+                            out.write(selectedusers.get(i).toString()+"\n");
+                        }
+                    } else out.write("0\n");
                 }
                 out.write(chatname+"\n");
                 
@@ -365,7 +366,7 @@ public class ChatClient extends javax.swing.JFrame {
                             else atb.chatid=id;
                         }
                         break;
-                    case 0:
+                    case 4:
                         id=new Integer(in.readLine()).intValue();
                         int lines=new Integer(in.readLine()).intValue();
                         atb=findTab(id);
