@@ -28,6 +28,8 @@ public class ChatClient extends javax.swing.JFrame {
             javax.swing.JTextField field;
             javax.swing.JList userlist, chatlist;
             javax.swing.DefaultListModel userlistmodel, chatlistmodel;
+
+        private LinkedList globalusers=new LinkedList();
      }
 
     //Streamy na komunikaciu
@@ -202,12 +204,17 @@ public class ChatClient extends javax.swing.JFrame {
                 switch (msgCode){
                     case 1:
          //               skTextArea.append(line.substring(1));
+                        skGlobalUsers.clear();
                         skUserListModel.removeAllElements();
                         int users=new Integer(in.readLine()).intValue();
                         for (int i=0; i<users;i++) {
+                            skUser user=new skUser();
                             line=in.readLine();
+                            user.user=line;
                             if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);}
                             else line=in.readLine();
+                            user.nick=line;
+                            skGlobalUsers.add(user);
                             skUserListModel.addElement(line+"\n");
                         }
                             //                System.out.println(line);
@@ -315,8 +322,26 @@ public class ChatClient extends javax.swing.JFrame {
             tb.split1.setRightComponent(tb.field);
             
             jTabbedPane1.addTab(name,tb.split1);
+            
+            
+            
+            tb.userlistmodel.removeAllElements();
+            for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
+                tb.userlistmodel.addElement(((skUser)i.next()).nick);
+            }
+            
+            
             tabList.add(tb);
         
     }
+
+    private LinkedList skGlobalUsers=new LinkedList();
+
+    public final class skUser {
+        private String nick;
+
+        private String user;
+    }
+
 
 }
