@@ -61,46 +61,49 @@ public class ChatClient extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane2 = new javax.swing.JSplitPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        skTextArea = new javax.swing.JTextArea();
+        jSplitPane3 = new javax.swing.JSplitPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        skTextArea = new javax.swing.JTextArea();
         skMsgField = new javax.swing.JTextField();
-        skSendButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(skMyNick);
         setResizable(false);
         jTabbedPane1.setVerifyInputWhenFocusTarget(false);
-        jSplitPane1.setDividerLocation(500);
-        jSplitPane2.setDividerLocation(200);
-        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        skList1Model=new javax.swing.DefaultListModel();
-        jList1.setModel(skList1Model
-        );
-        jScrollPane2.setViewportView(jList1);
-
-        jSplitPane2.setTopComponent(jScrollPane2);
-
-        skList2Model=new javax.swing.DefaultListModel();
-        jList2.setModel(skList2Model);
-        jScrollPane3.setViewportView(jList2);
-
-        jSplitPane2.setRightComponent(jScrollPane3);
-
-        jSplitPane1.setRightComponent(jSplitPane2);
-
+        jSplitPane1.setDividerLocation(375);
+        jSplitPane1.setDividerSize(15);
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane2.setDividerLocation(500);
         skTextArea.setColumns(20);
         skTextArea.setEditable(false);
         skTextArea.setRows(5);
         skTextArea.setText("just click on listed chat or user to start\n");
         jScrollPane1.setViewportView(skTextArea);
 
-        jSplitPane1.setLeftComponent(jScrollPane1);
+        jSplitPane2.setLeftComponent(jScrollPane1);
 
-        jTabbedPane1.addTab("info", jSplitPane1);
+        jSplitPane3.setDividerLocation(200);
+        jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        skList1Model=new javax.swing.DefaultListModel();
+        jList1.setModel(skList1Model
+        );
+        jScrollPane2.setViewportView(jList1);
+
+        jSplitPane3.setTopComponent(jScrollPane2);
+
+        skList2Model=new javax.swing.DefaultListModel();
+        jList2.setModel(skList2Model);
+        jScrollPane3.setViewportView(jList2);
+
+        jSplitPane3.setRightComponent(jScrollPane3);
+
+        jSplitPane2.setRightComponent(jSplitPane3);
+
+        jSplitPane1.setLeftComponent(jSplitPane2);
 
         skMsgField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -108,12 +111,9 @@ public class ChatClient extends javax.swing.JFrame {
             }
         });
 
-        skSendButton.setText("Send");
-        skSendButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                skSendButtonActionPerformed(evt);
-            }
-        });
+        jSplitPane1.setRightComponent(skMsgField);
+
+        jTabbedPane1.addTab("info", jSplitPane1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -121,24 +121,15 @@ public class ChatClient extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(skMsgField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(skSendButton)))
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 386, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(skSendButton)
-                    .add(skMsgField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                .addContainerGap())
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -147,10 +138,6 @@ public class ChatClient extends javax.swing.JFrame {
         // TODO add your handling code here:
         enterMsg();
     }//GEN-LAST:event_skMsgFieldActionPerformed
-
-    private void skSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skSendButtonActionPerformed
-        enterMsg();
-    }//GEN-LAST:event_skSendButtonActionPerformed
 
     private void userList(){
 
@@ -247,9 +234,9 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField skMsgField;
-    private javax.swing.JButton skSendButton;
     private javax.swing.JTextArea skTextArea;
     // End of variables declaration//GEN-END:variables
     private javax.swing.DefaultListModel skList1Model;
