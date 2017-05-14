@@ -31,14 +31,32 @@ public class ChatClient extends javax.swing.JFrame {
 
         private LinkedList globalusers=new LinkedList();
 
-        private String chatname;
+        private String chatname="";
 
         private int chatid=-1;
 
         private String chattobe;
 
-        public void skMsgFieldActionPerformed(java.awt.event.ActionEvent evt) {
-            enterMsg();
+        public void fieldActionPerformed(java.awt.event.ActionEvent evt) {
+            try{
+                //Odoslanie spravy
+                out.write("0\n");
+                out.write(new Integer(chatid).toString());
+                out.write("\n");
+                out.write("1\n");
+                out.write(chattobe+"\n");
+                
+                out.write(chatname+"\n");
+                
+                out.write("1\n"+skMyNick+"> "+field.getText()+"\n");
+                out.flush();
+                //Vymazanie obsahu pola skMsgField
+
+                field.setText("");
+            }catch (Exception e){
+                System.out.println("Chyba1 "+e.getMessage());
+                System.exit(1);
+            }
         }
 
         public void enterMsg() {
@@ -50,7 +68,7 @@ public class ChatClient extends javax.swing.JFrame {
 
                 field.setText("");
             }catch (Exception e){
-                System.out.println("Chyba "+e.getMessage());
+                System.out.println("Chyba2 "+e.getMessage());
                 System.exit(1);
             }
         }
@@ -97,7 +115,7 @@ public class ChatClient extends javax.swing.JFrame {
             //tb.field.setText("tbfield");
             field.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    skMsgFieldActionPerformed(evt);
+                    fieldActionPerformed(evt);
                 }
             });
             
@@ -128,7 +146,7 @@ public class ChatClient extends javax.swing.JFrame {
             out.write(skMyLogin+"\n");//enter
             out.flush();
         }catch (Exception e){
-            System.out.println("Chyba "+e.getMessage());
+            System.out.println("Chyba3 "+e.getMessage());
             System.exit(1);
         }
 
@@ -259,7 +277,7 @@ public class ChatClient extends javax.swing.JFrame {
 
             skMsgField.setText("");
         }catch (Exception e){
-            System.out.println("Chyba "+e.getMessage());
+            System.out.println("Chyba4 "+e.getMessage());
             System.exit(1);
         }
     }
@@ -288,6 +306,7 @@ public class ChatClient extends javax.swing.JFrame {
                             if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);}
                             else line=in.readLine();
                             user.nick=line;
+                            System.out.println(user.nick+" "+user.user);
                             skGlobalUsers.add(user);
                             skUserListModel.addElement(line+"\n");
                         }
@@ -311,7 +330,7 @@ public class ChatClient extends javax.swing.JFrame {
                 in.close();
                 out.close();
             }catch (Exception e){
-                System.out.println("Chyba "+e.getMessage());
+                System.out.println("Chyba5 "+e.getMessage());
             }
             System.exit(0);
         }
@@ -356,8 +375,9 @@ public class ChatClient extends javax.swing.JFrame {
             tab tb=new tab();
             
             tb.initComponents();
-            tb.chatname=name;
+            //tb.chatname=name;
             tb.chattobe=getUser(name);
+            System.out.println(tb.chattobe);
             
             //        skGlobalUsers
             jTabbedPane1.addTab(name,tb.split1);
@@ -386,8 +406,12 @@ public class ChatClient extends javax.swing.JFrame {
         String user=null;
         for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
             skUser needle=(skUser)i.next();
-            if ((needle).nick.compareTo(nick)==0) {
-                user=needle.user;break;
+                System.out.println(needle.user+" "+needle.nick+" "+nick.trim());
+            if ((needle).nick.compareTo(nick.trim())==0) {
+                user=needle.user;
+                                System.out.println(needle.user+" found "+needle.nick);
+
+                break;
             }
         }
         return user;
