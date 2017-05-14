@@ -184,21 +184,27 @@ public class ChatClient extends javax.swing.JFrame {
             try{
                 String line;
                 //Precitam riadok zo standardneho vstupu
-                while ((line = in.readLine()) != null) {
+                
                     //Vypisem riadok
                     
-                    char msgCode=line.charAt(0);
-                    switch (msgCode){
-                        case 0x01:
-             //               skTextArea.append(line.substring(1));
-                            skListModel.removeAllElements();
-                            skListModel.addElement(line.substring(1));break;
-                        case 0x00:
-                            skTextArea.append(line.substring(1)+"\n");break;
-                        default:
-                            //skTextArea.append(line+"\n");break;
-                    }
-                 }
+                char msgCode=(char)in.read();in.mark(1);
+                switch (msgCode){
+                    case 0x01:
+         //               skTextArea.append(line.substring(1));
+                        skListModel.removeAllElements();
+                        while ((line = in.readLine()) != null) 
+                            skListModel.addElement(line+"\n");
+                        break;
+                        
+                    case 0x00:
+                        while ((line = in.readLine()) != null) 
+                            skTextArea.append(line+"\n");
+                        break;
+                    default:
+                        while ((line = in.readLine()) != null) 
+                            skTextArea.append(line+"\n");
+//                        skTextArea.append(line+"\n");break;
+                }
 
                 //Uzavriem streamy
                 in.close();
