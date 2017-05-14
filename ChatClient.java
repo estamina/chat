@@ -291,22 +291,19 @@ public class ChatClient extends javax.swing.JFrame {
     }//GEN-LAST:event_skMsgFieldActionPerformed
 
     private void updateUserList(){
-     //   for (int i=0; i<skGlobalUsers.size();i++) {
         skUserListModel.removeAllElements();
-       // System.gc();
-        //skUserListModel=null;
-        //skUserListModel=new javax.swing.DefaultListModel();
+           // System.gc();
         skTextArea.setText("");
         for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
             String nick=((skUser)i.next()).nick;
-                skTextArea.append(nick+"\n");
-            skUserListModel.addElement(nick+"\n");
+          //  skTextArea.append(nick+"\n");
+            skUserListModel.addElement(nick);
             skUserList.ensureIndexIsVisible(skUserListModel.size());
+            skUserList.updateUI();
         }
         
         for (Enumeration e = skUserListModel.elements() ; e.hasMoreElements() ;) {
-         skTextArea.append("el "+e.nextElement());
-
+            skTextArea.append(e.nextElement()+"\n");
         }
     }
 
