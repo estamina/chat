@@ -286,6 +286,7 @@ public class ChatClient extends javax.swing.JFrame {
         //Metoda vykonavaneho vlakna
         public void run(){
             int id;
+            tab atb;
             try{
                 String line;
                 //Precitam riadok zo standardneho vstupu
@@ -325,7 +326,7 @@ public class ChatClient extends javax.swing.JFrame {
                             if(line.compareTo(skMyNick)!=0)othernick=line;
                         }
                         iusers--;
-                        tab atb=findTab(id);
+                        atb=findTab(id);
                         if (atb==null){
                             atb=findTab(othernick);
                             if (atb==null) addTab(othernick,id);
@@ -335,9 +336,10 @@ public class ChatClient extends javax.swing.JFrame {
                     case 0:
                         id=new Integer(in.readLine()).intValue();
                         int lines=new Integer(in.readLine()).intValue();
+                        atb=findTab(id);
                         for (int i=0; i<lines;i++) {
                             line=in.readLine();
-                            skTextArea.append(line+"\n");
+                            atb.text.append(line+"\n");
                         }
                         break;
                     default:
