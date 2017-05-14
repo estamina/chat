@@ -30,6 +30,80 @@ public class ChatClient extends javax.swing.JFrame {
             javax.swing.DefaultListModel userlistmodel, chatlistmodel;
 
         private LinkedList globalusers=new LinkedList();
+
+        private String chatname;
+
+        private int chatid=-1;
+
+        private String chattobe;
+
+        public void skMsgFieldActionPerformed(java.awt.event.ActionEvent evt) {
+            enterMsg();
+        }
+
+        public void enterMsg() {
+            try{
+                //Odoslanie spravy
+                out.write("0\n1\n"+skMyNick+"> "+field.getText()+"\n");
+                out.flush();
+                //Vymazanie obsahu pola skMsgField
+
+                field.setText("");
+            }catch (Exception e){
+                System.out.println("Chyba "+e.getMessage());
+                System.exit(1);
+            }
+        }
+
+        public void initComponents() {
+            split1 = new javax.swing.JSplitPane();
+            split2 = new javax.swing.JSplitPane();
+            scroll1=new javax.swing.JScrollPane();
+            text=new javax.swing.JTextArea();
+            split3 = new javax.swing.JSplitPane();
+            scroll2=new javax.swing.JScrollPane();
+            userlist = new javax.swing.JList();
+            scroll3=new javax.swing.JScrollPane();
+            chatlist = new javax.swing.JList();
+            field= new javax.swing.JTextField();
+            userlistmodel=new javax.swing.DefaultListModel();
+            chatlistmodel=new javax.swing.DefaultListModel();
+            //tb.text.setText("daco");
+            
+            split1.setDividerLocation(375);
+            split1.setDividerSize(15);
+            split1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+            split2.setDividerLocation(500);
+            text.setColumns(20);
+            text.setRows(5);
+            scroll1.setViewportView(text);
+
+            split2.setLeftComponent(scroll1);
+           
+            split3.setDividerLocation(180);
+            split3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+            userlist.setModel(userlistmodel);
+            scroll2.setViewportView(userlist);
+
+            split3.setLeftComponent(scroll2);
+
+            chatlist.setModel(chatlistmodel);
+            scroll3.setViewportView(chatlist);
+
+            split3.setRightComponent(scroll3);
+            split2.setRightComponent(split3);
+            split1.setLeftComponent(split2);
+
+            //tb.field.setText("tbfield");
+            field.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    skMsgFieldActionPerformed(evt);
+                }
+            });
+            
+            split1.setRightComponent(field);
+
+        }
      }
 
     //Streamy na komunikaciu
@@ -280,47 +354,12 @@ public class ChatClient extends javax.swing.JFrame {
  
 
             tab tb=new tab();
-            tb.split1 = new javax.swing.JSplitPane();
-            tb.split2 = new javax.swing.JSplitPane();
-            tb.scroll1=new javax.swing.JScrollPane();
-            tb.text=new javax.swing.JTextArea();
-            tb.split3 = new javax.swing.JSplitPane();
-            tb.scroll2=new javax.swing.JScrollPane();
-            tb.userlist = new javax.swing.JList();
-            tb.scroll3=new javax.swing.JScrollPane();
-            tb.chatlist = new javax.swing.JList();
-            tb.field= new javax.swing.JTextField();
-            tb.userlistmodel=new javax.swing.DefaultListModel();
-            tb.chatlistmodel=new javax.swing.DefaultListModel();
-            //tb.text.setText("daco");
             
-            tb.split1.setDividerLocation(375);
-            tb.split1.setDividerSize(15);
-            tb.split1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-            tb.split2.setDividerLocation(500);
-            tb.text.setColumns(20);
-            tb.text.setRows(5);
-            tb.scroll1.setViewportView(tb.text);
-
-            tb.split2.setLeftComponent(tb.scroll1);
-           
-            tb.split3.setDividerLocation(180);
-            tb.split3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-            tb.userlist.setModel(tb.userlistmodel);
-            tb.scroll2.setViewportView(tb.userlist);
-
-            tb.split3.setLeftComponent(tb.scroll2);
-
-            tb.chatlist.setModel(tb.chatlistmodel);
-            tb.scroll3.setViewportView(tb.chatlist);
-
-            tb.split3.setRightComponent(tb.scroll3);
-            tb.split2.setRightComponent(tb.split3);
-            tb.split1.setLeftComponent(tb.split2);
-
-            tb.field.setText("tbfield");
-            tb.split1.setRightComponent(tb.field);
+            tb.initComponents();
+            tb.chatname=name;
+            tb.chattobe=getUser(name);
             
+            //        skGlobalUsers
             jTabbedPane1.addTab(name,tb.split1);
             
             
@@ -341,6 +380,17 @@ public class ChatClient extends javax.swing.JFrame {
         private String nick;
 
         private String user;
+    }
+
+    public String getUser(String nick) {
+        String user=null;
+        for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
+            skUser needle=(skUser)i.next();
+            if ((needle).nick.compareTo(nick)==0) {
+                user=needle.user;break;
+            }
+        }
+        return user;
     }
 
 
