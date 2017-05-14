@@ -181,7 +181,7 @@ public class ChatClient extends javax.swing.JFrame {
         initComponents();
         tabList = new LinkedList();
         new ReceiveThread().start();
-        //userList();
+        //updateUserList();
     }
 
     /** This method is called from within the constructor to
@@ -290,13 +290,24 @@ public class ChatClient extends javax.swing.JFrame {
         enterMsg();
     }//GEN-LAST:event_skMsgFieldActionPerformed
 
-    private void userList(){
+    private void updateUserList(){
+     //   for (int i=0; i<skGlobalUsers.size();i++) {
+        skUserListModel.removeAllElements();
+       // System.gc();
+        //skUserListModel=null;
+        //skUserListModel=new javax.swing.DefaultListModel();
+        skTextArea.setText("");
+        for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
+            String nick=((skUser)i.next()).nick;
+                skTextArea.append(nick+"\n");
+            skUserListModel.addElement(nick+"\n");
+            skUserList.ensureIndexIsVisible(skUserListModel.size());
+        }
+        
+        for (Enumeration e = skUserListModel.elements() ; e.hasMoreElements() ;) {
+         skTextArea.append("el "+e.nextElement());
 
-        skUserList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "user 1", "user 2","user3" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        }
     }
 
      private void enterMsg(){
@@ -334,7 +345,7 @@ public class ChatClient extends javax.swing.JFrame {
                     case 1:
          //               skTextArea.append(line.substring(1));
                         skGlobalUsers.clear();
-                        skUserListModel.removeAllElements();
+     
                         int users=new Integer(in.readLine()).intValue();
                         for (int i=0; i<users;i++) {
                             skUser user=new skUser();
@@ -345,8 +356,8 @@ public class ChatClient extends javax.swing.JFrame {
                             user.nick=line;
                             System.out.println(user.nick+" "+user.user);
                             skGlobalUsers.add(user);
-                            skUserListModel.addElement(line+"\n");
                         }
+                        updateUserList();
                             //                System.out.println(line);
                         break;
                     case 2:
