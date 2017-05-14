@@ -29,7 +29,6 @@ public class ChatClient extends javax.swing.JFrame {
             javax.swing.JSplitPane split1, split2, split3;
             javax.swing.JTextField field;
             javax.swing.JList userlist, chatlist;
-            javax.swing.DefaultListModel userlistmodel, chatlistmodel;
 
         //private LinkedList globalusers=new LinkedList();
 
@@ -95,9 +94,7 @@ public class ChatClient extends javax.swing.JFrame {
             scroll3=new javax.swing.JScrollPane();
             chatlist = new javax.swing.JList();
             field= new javax.swing.JTextField();
-            userlistmodel=new javax.swing.DefaultListModel();
-            userscellrenderer=new UsersCellRenderer();
-            chatlistmodel=new javax.swing.DefaultListModel();
+            userscellrenderer=new skUsersCellRenderer();
             //tb.text.setText("daco");
 
             split1.setDividerLocation(375);
@@ -106,7 +103,7 @@ public class ChatClient extends javax.swing.JFrame {
 
         split1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                tabGotFocus(evt);//jSplitPane1FocusGained(evt);
+                split1FocusGained(evt);//jSplitPane1FocusGained(evt);
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 split1FocusLost(evt);
@@ -138,7 +135,7 @@ public class ChatClient extends javax.swing.JFrame {
 
             split3.setLeftComponent(scroll2);
 
-            chatlist.setModel(chatlistmodel);
+            chatlist.setModel(skChatListModel);
             scroll3.setViewportView(chatlist);
 
             split3.setRightComponent(scroll3);
@@ -156,7 +153,7 @@ public class ChatClient extends javax.swing.JFrame {
 /*
             split1.addFocusListener(new java.awt.event.FocusListener() {
                 public void focusGained(FocusEvent e) {
-                    tabGotFocus(e);
+                    split1FocusGained(e);
                 }
                 public void focusLost(FocusEvent e) {
                 }
@@ -189,9 +186,9 @@ public class ChatClient extends javax.swing.JFrame {
 
         private ArrayList selectedusers=null;
 
-        private UsersCellRenderer userscellrenderer;
+        private skUsersCellRenderer userscellrenderer;
 
-        public void tabGotFocus(java.awt.event.FocusEvent evt) {
+        public void split1FocusGained(java.awt.event.FocusEvent evt) {
             int id=evt.getID();
             System.out.println("event "+id);
             if (id==java.awt.event.FocusEvent.FOCUS_GAINED) 
@@ -209,9 +206,6 @@ public class ChatClient extends javax.swing.JFrame {
     //Streamy na komunikaciu
     BufferedReader in;
     OutputStreamWriter out;
-
-    /** Creates new form ChatClient */
-    public ChatClient() {}
 
     public ChatClient(String login) {
         if (login.length()>0){skMyNick=skMyLogin=login;}else{
@@ -233,7 +227,7 @@ public class ChatClient extends javax.swing.JFrame {
         }
         initComponents();
         tabList = new LinkedList();
-        new ReceiveThread().start();
+        new skReceived().start();
     }
 
     /** This method is called from within the constructor to
@@ -309,12 +303,6 @@ public class ChatClient extends javax.swing.JFrame {
         jSplitPane1.setLeftComponent(jSplitPane2);
 
         skMsgField.setEnabled(false);
-        skMsgField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                skMsgFieldActionPerformed(evt);
-            }
-        });
-
         jSplitPane1.setRightComponent(skMsgField);
 
         jTabbedPane1.addTab("!", jSplitPane1);
@@ -361,43 +349,25 @@ public class ChatClient extends javax.swing.JFrame {
           
     }//GEN-LAST:event_skUserListMouseClicked
 
-    private void skMsgFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skMsgFieldActionPerformed
-        // TODO add your handling code here:
-        enterMsg();
-    }//GEN-LAST:event_skMsgFieldActionPerformed
-
     private void updateUserList(){
-//        skUserListModel.removeAllElements();
         skUserListModel.clear();
-           // System.gc();
-        skTextArea.setText("");
         for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
             String nick=((skUser)i.next()).nick;
             skUserListModel.addElement(nick+"\n");
             skUserList.ensureIndexIsVisible(skUserListModel.size());
         }
-
+/*debug
+        skTextArea.setText("");
         for (Enumeration e = skUserListModel.elements() ; e.hasMoreElements() ;) {
             skTextArea.append(e.nextElement()+"\n");
         }
+ */
     }
-
-     private void enterMsg(){
-        try{
-            //Odoslanie spravy
-            out.write(msgIntro+"\n0\n1\n"+skMyNick+"> "+skMsgField.getText()+"\n");
-            out.flush();
-            //Vymazanie obsahu pola skMsgField
-
-            skMsgField.setText("");
-        }catch (Exception e){
-            System.out.println("Chyba4 "+e.getMessage());
-            System.exit(1);
-        }
-    }
-        //Sluzi na prijem sprav zo servera a vypis do okna
-    class ReceiveThread extends Thread {
-        //Metoda vykonavaneho vlakna
+     /**
+     * thread for decoding received messages from socket
+     */
+    class skReceived extends Thread {
+ 
         public void run(){
             int id;
             skTab atb;
@@ -405,7 +375,6 @@ public class ChatClient extends javax.swing.JFrame {
             try{
                 String line;
 
-                    //Vypisem riadok
                 while ((line = in.readLine()) != null) {
                     while (line.compareTo(msgIntro)!=0){line = in.readLine();}
                     line = in.readLine();
@@ -446,13 +415,6 @@ public class ChatClient extends javax.swing.JFrame {
                             atb=findTab(otheruser);
                             if (atb==null) atb=addTab(othernick,id);
                             else atb.chatid=id;
-                        }else{
-/*
-                                       atb.userlistmodel.removeAllElements();
-            for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
-                atb.userlistmodel.addElement(((skUser)i.next()).nick);
-            }
- */
                         }
                         atb.userscellrenderer.chatusers=chatusers;
                         break;
@@ -468,7 +430,7 @@ public class ChatClient extends javax.swing.JFrame {
                         jTabbedPane1.setBackgroundAt(itab,Color.red);
                         break;
                     case 3:
-                        //num of chats
+                        //number of chats
                         line=in.readLine();
                         id=new Integer(in.readLine()).intValue();
                         atb=findTab(id);
@@ -483,7 +445,7 @@ public class ChatClient extends javax.swing.JFrame {
                             skTextArea.append("default  "+line+"\n");
                 }
                 }
-                //Uzavriem streamy
+                
                 in.close();
                 out.close();
             }catch (Exception e){
@@ -501,7 +463,7 @@ public class ChatClient extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ChatClient().setVisible(true);
+                //new ChatClient().setVisible(true);
             }
         });
     }
@@ -592,7 +554,7 @@ public class ChatClient extends javax.swing.JFrame {
         return ltab;
     }
 
-    public class UsersCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
+    public class skUsersCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
         public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             boolean found=false;
             for (int i=0;i<chatusers.size();i++){
@@ -609,7 +571,7 @@ public class ChatClient extends javax.swing.JFrame {
             return this;
         }
         
-        public UsersCellRenderer() {
+        public skUsersCellRenderer() {
             setOpaque(true);
         }
         
