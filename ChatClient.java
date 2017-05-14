@@ -30,7 +30,7 @@ public class ChatClient extends javax.swing.JFrame {
             javax.swing.JList userlist, chatlist;
             javax.swing.DefaultListModel userlistmodel, chatlistmodel;
 
-        private LinkedList globalusers=new LinkedList();
+        //private LinkedList globalusers=new LinkedList();
 
         private String chatname="";
 
@@ -387,25 +387,29 @@ public class ChatClient extends javax.swing.JFrame {
                         id=new Integer(in.readLine()).intValue();
                         int iusers=new Integer(in.readLine()).intValue();
                         String otheruser=null,othernick=null;
+                        ArrayList chatusers=new ArrayList();
                         for (int i=0;i<iusers;i++){
                             line=in.readLine();
                             if(line.compareTo(skMyLogin)!=0)otheruser=line;
                             line=in.readLine();
                             if(line.compareTo(skMyNick)!=0)othernick=line;
+                            chatusers.add(line);
                         }
                         iusers--;
                         atb=findTab(id);
                         if (atb==null){
                             atb=findTab(otheruser);
-                            if (atb==null) addTab(othernick,id);
+                            if (atb==null) atb=addTab(othernick,id);
                             else atb.chatid=id;
                         }else{
+/*                            
                                             atb.userlistmodel.removeAllElements();
             for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
                 atb.userlistmodel.addElement(((skUser)i.next()).nick);
             }
-
+ */
                         }
+                        atb.userscellrenderer.chatusers=chatusers;
                         break;
                     case 4:
                         id=new Integer(in.readLine()).intValue();
@@ -479,7 +483,7 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.DefaultListModel skUserListModel;
     private javax.swing.DefaultListModel skChatListModel;
 
-    public void addTab(String name, int lid) {
+    public tab addTab(String name, int lid) {
 
 
             tab tb=new tab();
@@ -494,14 +498,16 @@ public class ChatClient extends javax.swing.JFrame {
             jTabbedPane1.addTab(name,tb.split1);
 
 
-
+/*
             tb.userlistmodel.removeAllElements();
             for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
                 tb.userlistmodel.addElement(((skUser)i.next()).nick);
             }
+ **/
 
 
             tabList.add(tb);
+            return tb;
 
     }
 
@@ -556,17 +562,33 @@ public class ChatClient extends javax.swing.JFrame {
     public class UsersCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
       public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             //if (index>0)
+          boolean found=false;
+          for (int i=0;i<chatusers.size();i++){
+              if (chatusers.get(i).toString().compareTo(value.toString().trim())==0) found=true;
+          }
+          if (found){
+              setBackground(isSelected ? Color.red : Color.white);
+              setForeground(isSelected ? Color.white : Color.gray);
+          }else{
+                setBackground(isSelected ? Color.red : Color.white);
+                setForeground(isSelected ? Color.white : Color.black);          
+          }
+          setText(value.toString());
+          /*
             if (value.toString().compareTo("nick_D\n")==0)setText(value.toString()+" tento");
             else    setText(value.toString());
             if (index==2) setBackground(java.awt.Color.MAGENTA);
             else setBackground(isSelected ? Color.red : Color.white);
          setForeground(isSelected ? Color.white : Color.black);
+           */
             return this;
         }
 
         public UsersCellRenderer() {
          setOpaque(true);
         }
+
+        private ArrayList chatusers=new ArrayList();
     }
 
     private UsersCellRenderer1 skRenderer=new UsersCellRenderer1();
