@@ -291,6 +291,7 @@ public class ChatClient extends javax.swing.JFrame {
 
                     //Vypisem riadok
                 while ((line = in.readLine()) != null) {
+                    System.out.println("msgcode:"+line);
                     //line=in.readLine();
                 int msgCode=new Integer(line).intValue();
                 switch (msgCode){
@@ -312,7 +313,23 @@ public class ChatClient extends javax.swing.JFrame {
                         }
                             //                System.out.println(line);
                         break;
-
+                    case 2:
+                        int id=new Integer(in.readLine()).intValue();
+                        int iusers=new Integer(in.readLine()).intValue();
+                        String otheruser,othernick=null;
+                        for (int i=0;i<iusers;i++){
+                            line=in.readLine();
+                            if(line.compareTo(skMyLogin)!=0)otheruser=line;
+                            line=in.readLine();
+                            if(line.compareTo(skMyNick)!=0)othernick=line;
+                        }
+                        iusers--;
+                        tab atb=findTab(id);
+                        if (atb==null){
+                            atb=findTab(othernick);
+                            if (atb==null) addTab(othernick);
+                        }
+                        break;
                     case 0:
                         int lines=new Integer(in.readLine()).intValue();
                         for (int i=0; i<lines;i++) {
@@ -415,6 +432,26 @@ public class ChatClient extends javax.swing.JFrame {
             }
         }
         return user;
+    }
+
+    public tab findTab(int id) {
+        tab atb=null;
+        for (Iterator i=tabList.iterator();i.hasNext();){
+            atb=(tab)i.next();
+            if ((atb).chatid==id)break;
+        }
+        
+        return atb;
+    }
+
+    public tab findTab(String nick) {
+        tab atb=null;
+        for (Iterator i=tabList.iterator();i.hasNext();){
+            atb=(tab)i.next();
+            if ((atb).chattobe.compareTo(nick)==0)break;
+        }
+        
+        return atb;
     }
 
 
