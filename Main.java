@@ -23,9 +23,22 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args)  throws Exception {
-        // TODO code application logic here
-        ChatClient client = new ChatClient();
-        client.show();
+        try {
+            // TODO code application logic here
+//        System.out.println(args[0]);
+  
+            if (args[0].length()>0){
+                 new ChatClient(args[0]).show();
+            }else{
+                 new ChatClient("").show();
+            }
+        }
+        catch(java.lang.ArrayIndexOutOfBoundsException e){
+                 new ChatClient("").show();
+        
+        }finally {
+        }
+        
         
     }
 }

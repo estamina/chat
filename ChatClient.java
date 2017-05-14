@@ -16,17 +16,17 @@ public class ChatClient extends javax.swing.JFrame {
     public static String HOST="localhost";
     public static final int CHAT_PORT=12345;
     //public static String HOST="sk16614c.siemens-pse.sk";
-    
+
     //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
 
     //Streamy na komunikaciu
     BufferedReader in;
     OutputStreamWriter out;
-    
+
     /** Creates new form ChatClient */
     public ChatClient() {}
-    
+
     public ChatClient(String login) {
         if (login.length()>0){skMyNick=skMyLogin=login;}else{
         skMyNick=skMyLogin=System.getProperty("user.name","someone");}
@@ -50,7 +50,7 @@ public class ChatClient extends javax.swing.JFrame {
         new ReceiveThread().start();
         //userList();
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -77,18 +77,15 @@ public class ChatClient extends javax.swing.JFrame {
         jSplitPane1.setDividerLocation(500);
         jSplitPane2.setDividerLocation(200);
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        skListModel=new javax.swing.DefaultListModel();
-        jList1.setModel(skListModel
+        skList1Model=new javax.swing.DefaultListModel();
+        jList1.setModel(skList1Model
         );
         jScrollPane2.setViewportView(jList1);
 
         jSplitPane2.setTopComponent(jScrollPane2);
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        skList2Model=new javax.swing.DefaultListModel();
+        jList2.setModel(skList2Model);
         jScrollPane3.setViewportView(jList2);
 
         jSplitPane2.setRightComponent(jScrollPane3);
@@ -154,29 +151,29 @@ public class ChatClient extends javax.swing.JFrame {
     private void skSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skSendButtonActionPerformed
         enterMsg();
     }//GEN-LAST:event_skSendButtonActionPerformed
-    
+
     private void userList(){
-        
+
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "user 1", "user 2","user3" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
     }
-    
+
      private void enterMsg(){
         try{
             //Odoslanie spravy
             out.write("0\n1\n"+skMyNick+"> "+skMsgField.getText()+"\n");
             out.flush();
             //Vymazanie obsahu pola skMsgField
-            
+
             skMsgField.setText("");
         }catch (Exception e){
             System.out.println("Chyba "+e.getMessage());
             System.exit(1);
         }
-    } 
+    }
         //Sluzi na prijem sprav zo servera a vypis do okna
     class ReceiveThread extends Thread {
         //Metoda vykonavaneho vlakna
@@ -184,7 +181,7 @@ public class ChatClient extends javax.swing.JFrame {
             try{
                 String line;
                 //Precitam riadok zo standardneho vstupu
-                
+
                     //Vypisem riadok
                 while ((line = in.readLine()) != null) {
                     //line=in.readLine();
@@ -192,26 +189,26 @@ public class ChatClient extends javax.swing.JFrame {
                 switch (msgCode){
                     case 1:
          //               skTextArea.append(line.substring(1));
-                        skListModel.removeAllElements();
+                        skList1Model.removeAllElements();
                         int users=new Integer(in.readLine()).intValue();
                         for (int i=0; i<users;i++) {
                             line=in.readLine();
                             if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);}
                             else line=in.readLine();
-                            skListModel.addElement(line+"\n");                        
+                            skList1Model.addElement(line+"\n");
                         }
                             //                System.out.println(line);
                         break;
-                        
+
                     case 0:
                         int lines=new Integer(in.readLine()).intValue();
                         for (int i=0; i<lines;i++) {
-                            line=in.readLine();                                       
+                            line=in.readLine();
                             skTextArea.append(line+"\n");
                         }
                         break;
                     default:
-//                        while ((line = in.readLine()) != null) 
+//                        while ((line = in.readLine()) != null)
                             skTextArea.append("default  "+line+"\n");
 //                        skTextArea.append(line+"\n");break;
                 }
@@ -225,13 +222,13 @@ public class ChatClient extends javax.swing.JFrame {
             System.exit(0);
         }
     }
-    
-    
+
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ChatClient().setVisible(true);
@@ -240,7 +237,8 @@ public class ChatClient extends javax.swing.JFrame {
     }
 
     private String skMyLogin;
-    
+    private String skMyNick;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList jList1;
     private javax.swing.JList jList2;
@@ -254,8 +252,7 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.JButton skSendButton;
     private javax.swing.JTextArea skTextArea;
     // End of variables declaration//GEN-END:variables
-    private javax.swing.DefaultListModel skListModel;
-
-    private String skMyNick;
+    private javax.swing.DefaultListModel skList1Model;
+    private javax.swing.DefaultListModel skList2Model;
 
 }
