@@ -6,6 +6,7 @@
 
 package chat;
 import java.net.*;
+import java.util.*;
 import java.io.*;
 /**
  *
@@ -19,6 +20,15 @@ public class ChatClient extends javax.swing.JFrame {
 
     //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
+
+    class tab{
+            javax.swing.JScrollPane scroll1, scroll2, scroll3;
+            javax.swing.JTextArea text;
+            javax.swing.JSplitPane split1, split2, split3;
+            javax.swing.JTextField field;
+            javax.swing.JList userlist, chatlist;
+            javax.swing.DefaultListModel userlistmodel, chatlistmodel;
+     }
 
     //Streamy na komunikaciu
     BufferedReader in;
@@ -47,6 +57,7 @@ public class ChatClient extends javax.swing.JFrame {
         }
 
         initComponents();
+        tabList = new LinkedList();
         new ReceiveThread().start();
         //userList();
     }
@@ -65,9 +76,9 @@ public class ChatClient extends javax.swing.JFrame {
         skTextArea = new javax.swing.JTextArea();
         jSplitPane3 = new javax.swing.JSplitPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        userlist = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
+        chatlist = new javax.swing.JList();
         skMsgField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -89,15 +100,15 @@ public class ChatClient extends javax.swing.JFrame {
         jSplitPane3.setDividerLocation(200);
         jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         skList1Model=new javax.swing.DefaultListModel();
-        jList1.setModel(skList1Model
+        userlist.setModel(skList1Model
         );
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane2.setViewportView(userlist);
 
         jSplitPane3.setTopComponent(jScrollPane2);
 
         skList2Model=new javax.swing.DefaultListModel();
-        jList2.setModel(skList2Model);
-        jScrollPane3.setViewportView(jList2);
+        chatlist.setModel(skList2Model);
+        jScrollPane3.setViewportView(chatlist);
 
         jSplitPane3.setRightComponent(jScrollPane3);
 
@@ -141,7 +152,7 @@ public class ChatClient extends javax.swing.JFrame {
 
     private void userList(){
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        userlist.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "user 1", "user 2","user3" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
@@ -225,10 +236,10 @@ public class ChatClient extends javax.swing.JFrame {
 
     private String skMyLogin;
     private String skMyNick;
-
+    private static LinkedList tabList;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
+    private javax.swing.JList chatlist;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -238,8 +249,59 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField skMsgField;
     private javax.swing.JTextArea skTextArea;
+    private javax.swing.JList userlist;
     // End of variables declaration//GEN-END:variables
     private javax.swing.DefaultListModel skList1Model;
     private javax.swing.DefaultListModel skList2Model;
+
+    public void addTab() {
+ 
+
+            tab tb=new tab();
+            tb.split1 = new javax.swing.JSplitPane();
+            tb.split2 = new javax.swing.JSplitPane();
+            tb.scroll1=new javax.swing.JScrollPane();
+            tb.text=new javax.swing.JTextArea();
+            tb.split3 = new javax.swing.JSplitPane();
+            tb.scroll2=new javax.swing.JScrollPane();
+            tb.userlist = new javax.swing.JList();
+            tb.scroll3=new javax.swing.JScrollPane();
+            tb.chatlist = new javax.swing.JList();
+            tb.field= new javax.swing.JTextField();
+            tb.userlistmodel=new javax.swing.DefaultListModel();
+            tb.chatlistmodel=new javax.swing.DefaultListModel();
+            //tb.text.setText("daco");
+            
+            tb.split1.setDividerLocation(375);
+            tb.split1.setDividerSize(15);
+            tb.split1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+            tb.split2.setDividerLocation(500);
+            tb.text.setColumns(20);
+            tb.text.setRows(5);
+            tb.scroll1.setViewportView(tb.text);
+
+            tb.split2.setLeftComponent(tb.scroll1);
+           
+            tb.split3.setDividerLocation(180);
+            tb.split3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+            tb.userlist.setModel(tb.userlistmodel);
+            tb.scroll2.setViewportView(tb.userlist);
+
+            tb.split3.setLeftComponent(tb.scroll2);
+
+            tb.chatlist.setModel(tb.chatlistmodel);
+            tb.scroll3.setViewportView(tb.chatlist);
+
+            tb.split3.setRightComponent(tb.scroll3);
+            tb.split2.setRightComponent(tb.split3);
+            tb.split1.setLeftComponent(tb.split2);
+
+            tb.field.setText("tbfield");
+            tb.split1.setRightComponent(tb.field);
+            
+            jTabbedPane1.addTab("tb",tb.split1);
+            tabList.add(tb);
+        
+    }
 
 }
