@@ -43,9 +43,10 @@ public class ChatClient extends javax.swing.JFrame {
                 out.write(msgIntro+"\n0\n");
                 out.write(new Integer(chatid).toString());
                 out.write("\n");
+                if (chatid==-1){
                 out.write("1\n");
                 out.write(chattobe+"\n");
-                
+                }else out.write("0\n\n");
                 out.write(chatname+"\n");
                 
                 out.write("1\n"+skMyNick+"> "+field.getText()+"\n");
@@ -250,9 +251,11 @@ public class ChatClient extends javax.swing.JFrame {
 // TODO add your handling code here:
                  if (evt.getClickCount() == 2) {
              int index = skUserList.locationToIndex(evt.getPoint());
-             addTab(skUserListModel.getElementAt(index).toString(),-1);
+             String anick=skUserListModel.getElementAt(index).toString();
+             if (anick.compareTo(skMyNick+"\n")!=0)
+                if (findTab(getUser(anick))==null)
+                    addTab(anick,-1);//chatid is -1 while it is not assigned from server yet
           }
-//       addTab();
     }//GEN-LAST:event_skUserListMouseClicked
 
     private void skMsgFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skMsgFieldActionPerformed
@@ -395,7 +398,7 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.DefaultListModel skUserListModel;
     private javax.swing.DefaultListModel skChatListModel;
 
-    public void addTab(String name, int id) {
+    public void addTab(String name, int lid) {
  
 
             tab tb=new tab();
@@ -403,7 +406,7 @@ public class ChatClient extends javax.swing.JFrame {
             tb.initComponents();
             //tb.chatname=name;
             tb.chattobe=getUser(name);
-            tb.chatid=id;
+            tb.chatid=lid;
             System.out.println(tb.chattobe);
             
             //        skGlobalUsers
@@ -444,11 +447,11 @@ public class ChatClient extends javax.swing.JFrame {
         return user;
     }
 
-    public tab findTab(int id) {
+    public tab findTab(int lid) {
         tab ltab=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
             ltab=(tab)i.next();
-            if ((ltab).chatid==id)break;
+            if ((ltab).chatid==lid)break;
             else ltab=null;
         }
         
