@@ -6,6 +6,7 @@
 
 package chat;
 import java.net.*;
+import java.awt.*;
 import java.util.*;
 import java.io.*;
 /**
@@ -109,8 +110,11 @@ public class ChatClient extends javax.swing.JFrame {
            
             split3.setDividerLocation(180);
             split3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-            userlist.setModel(userlistmodel);
+            userlist.setModel(skUserListModel);
             
+            userlist.setFixedCellHeight(10);
+            userlist.setFixedCellWidth(10);
+
             userlist.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     userlistMouseClicked(evt);
@@ -177,7 +181,12 @@ public class ChatClient extends javax.swing.JFrame {
             System.out.println("Chyba3 "+e.getMessage());
             System.exit(1);
         }
-
+/*
+        java.awt.Font f=skRenderer.getFont();
+        f.getName();
+        skRenderer.setFont(f);
+ */
+        skRenderer.setBackground(java.awt.Color.CYAN);
         initComponents();
         tabList = new LinkedList();
         new ReceiveThread().start();
@@ -224,6 +233,7 @@ public class ChatClient extends javax.swing.JFrame {
         skUserListModel=new javax.swing.DefaultListModel();
         skUserList.setModel(skUserListModel
         );
+        skUserList.setCellRenderer(skRenderer);
         skUserList.setFixedCellHeight(10);
         skUserList.setFixedCellWidth(10);
         skUserList.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -302,13 +312,15 @@ public class ChatClient extends javax.swing.JFrame {
           //  skTextArea.append(nick+"\n");
             skUserListModel.addElement(nick+"\n");
             skUserList.ensureIndexIsVisible(skUserListModel.size());
-    
+  /*  
             String cell=null;
             boolean t1=false,t2=false;
             javax.swing.JLabel l1=(javax.swing.JLabel)(skUserList.getCellRenderer()).getListCellRendererComponent(skUserList,cell,skUserListModel.size(),t1,t2);
-    java.awt.Rectangle g1=l1.getBounds();
-    skTextArea.append("xy "+g1.x+" "+g1.y+" "+g1.width+" "+g1.height+"\n");
-            
+            java.awt.Rectangle g1=l1.getBounds();
+            skTextArea.append("xy "+g1.x+" "+g1.y+" "+g1.width+" "+g1.height+"\n");
+    */        
+            java.awt.Rectangle g1=skRenderer.getBounds();
+            skTextArea.append(skRenderer.getFont().getFontName()+" xy "+g1.x+" "+g1.y+" "+g1.width+" "+g1.height+"\n");
       //   skUserList.updateUI();
         }
         
@@ -383,6 +395,12 @@ public class ChatClient extends javax.swing.JFrame {
                             atb=findTab(otheruser);
                             if (atb==null) addTab(othernick,id);
                             else atb.chatid=id;
+                        }else{
+                                            atb.userlistmodel.removeAllElements();
+            for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
+                atb.userlistmodel.addElement(((skUser)i.next()).nick);
+            }
+
                         }
                         break;
                     case 4:
@@ -530,6 +548,34 @@ public class ChatClient extends javax.swing.JFrame {
         
         return ltab;
     }
+
+    public class MyCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
+      public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            //if (index>0) 
+            if (value.toString().compareTo("nick_D\n")==0)setText(value.toString()+" tento");
+            else    setText(value.toString());
+            if (index==2) setBackground(java.awt.Color.MAGENTA);
+            else setBackground(isSelected ? Color.red : Color.white);
+         setForeground(isSelected ? Color.white : Color.black);
+            return this;
+        }
+
+        public MyCellRenderer() {
+         setOpaque(true);            
+        }
+    }
+
+    private MyCellRenderer skRenderer=new MyCellRenderer();
+
+    public  class MyCellRenderer1 extends javax.swing.DefaultListCellRenderer  {
+        public MyCellRenderer1() {
+            super();
+         //   setFont(java.awt.Font.ITALIC);
+        }
+        
+    }
+
+
 
 
 }
