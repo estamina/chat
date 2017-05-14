@@ -375,6 +375,19 @@ public class ChatClient extends javax.swing.JFrame {
                             atb.text.append(line+"\n");
                         }
                         break;
+                    case 3:
+                        //num of chats
+                        line=in.readLine();
+                        id=new Integer(in.readLine()).intValue();
+                        atb=findTab(id);
+                        atb.chatname=in.readLine();
+                        
+                        int ind=jTabbedPane1.indexOfComponent(atb.split1);
+                        jTabbedPane1.setTitleAt(ind,atb.chatname);
+                        //atb.split1.setTitleAt(ind,atb.chatname);
+                        
+                        
+                        break;
                     default:
 //                        while ((line = in.readLine()) != null)
                             skTextArea.append("default  "+line+"\n");
