@@ -13,9 +13,9 @@ import java.io.*;
  */
 public class ChatClient extends javax.swing.JFrame {
     //public static final int CHAT_PORT=12345;
-    //public static String HOST="localhost";
+    public static String HOST="localhost";
     public static final int CHAT_PORT=12345;
-    public static String HOST="sk16614c.siemens-pse.sk";
+    //public static String HOST="sk16614c.siemens-pse.sk";
     
     //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
@@ -25,8 +25,30 @@ public class ChatClient extends javax.swing.JFrame {
     OutputStreamWriter out;
     
     /** Creates new form ChatClient */
-    public ChatClient() {
+    public ChatClient() {}
+    
+    public ChatClient(String login) {
+        if (login.length()>0){skMyLogin=login;}else{
+        skMyLogin=System.getProperty("user.name","someone");}
+        try{
+            //Vytvorenie spojenia so serverom
+            socket = new Socket(HOST, CHAT_PORT);
+
+            //Streamy na komunikaciu
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new OutputStreamWriter(socket.getOutputStream());
+            //out.write(System.getProperty("user.name","someone")+" appeared\n");
+            out.write(6);
+            out.write(skMyLogin+" \n");//enter
+            out.flush();
+        }catch (Exception e){
+            System.out.println("Chyba "+e.getMessage());
+            System.exit(1);
+        }
+
         initComponents();
+        new ReceiveThread().start();
+        //userList();
     }
     
     /** This method is called from within the constructor to
@@ -37,76 +59,64 @@ public class ChatClient extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jSplitPane2 = new javax.swing.JSplitPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        jList1 = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea4 = new javax.swing.JTextArea();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea5 = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jTextArea7 = new javax.swing.JTextArea();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        jTextArea8 = new javax.swing.JTextArea();
+        jList2 = new javax.swing.JList();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        skTextArea = new javax.swing.JTextArea();
+        skMsgField = new javax.swing.JTextField();
+        skSendButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle(skMyLogin);
         setResizable(false);
         jTabbedPane1.setVerifyInputWhenFocusTarget(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jSplitPane1.setDividerLocation(500);
+        jSplitPane2.setDividerLocation(200);
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        skListModel=new javax.swing.DefaultListModel();
+        jList1.setModel(skListModel
+        );
+        jScrollPane2.setViewportView(jList1);
 
-        jTabbedPane1.addTab("Hlavny room", jScrollPane1);
+        jSplitPane2.setTopComponent(jScrollPane2);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        jList2.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jList2);
 
-        jTabbedPane1.addTab("tab2", jScrollPane2);
+        jSplitPane2.setRightComponent(jScrollPane3);
 
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jScrollPane3.setViewportView(jTextArea3);
+        jSplitPane1.setRightComponent(jSplitPane2);
 
-        jTabbedPane1.addTab("tab3", jScrollPane3);
+        skTextArea.setColumns(20);
+        skTextArea.setEditable(false);
+        skTextArea.setRows(5);
+        skTextArea.setText("just click on listed chat or user to start\n");
+        jScrollPane1.setViewportView(skTextArea);
 
-        jTextArea4.setColumns(20);
-        jTextArea4.setRows(5);
-        jScrollPane4.setViewportView(jTextArea4);
+        jSplitPane1.setLeftComponent(jScrollPane1);
 
-        jTabbedPane1.addTab("tab4", jScrollPane4);
+        jTabbedPane1.addTab("info", jSplitPane1);
 
-        jTextArea5.setColumns(20);
-        jTextArea5.setRows(5);
-        jScrollPane5.setViewportView(jTextArea5);
+        skMsgField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                skMsgFieldActionPerformed(evt);
+            }
+        });
 
-        jTabbedPane1.addTab("tab5", jScrollPane5);
-
-        jLabel1.setFont(new java.awt.Font("MS Sans Serif", 1, 12));
-        jLabel1.setText("Text spravy:");
-
-        jTextField1.setText("Text spravy ..........");
-
-        jButton1.setText("Send");
-
-        jTextArea7.setColumns(20);
-        jTextArea7.setRows(5);
-        jScrollPane6.setViewportView(jTextArea7);
-
-        jTabbedPane2.addTab("tab1", jScrollPane6);
-
-        jTextArea8.setColumns(20);
-        jTextArea8.setRows(5);
-        jScrollPane7.setViewportView(jTextArea8);
-
-        jTabbedPane2.addTab("tab2", jScrollPane7);
+        skSendButton.setText("Send");
+        skSendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                skSendButtonActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,37 +124,59 @@ public class ChatClient extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(skMsgField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 464, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 534, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jTabbedPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                    .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                        .add(skSendButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jTabbedPane2)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE))
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 386, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jButton1)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 29, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(12, Short.MAX_VALUE))
+                    .add(skSendButton)
+                    .add(skMsgField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void skMsgFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skMsgFieldActionPerformed
+        // TODO add your handling code here:
+        enterMsg();
+    }//GEN-LAST:event_skMsgFieldActionPerformed
+
+    private void skSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skSendButtonActionPerformed
+        enterMsg();
+    }//GEN-LAST:event_skSendButtonActionPerformed
     
+    private void userList(){
+        
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "user 1", "user 2","user3" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+    }
     
-    
+     private void enterMsg(){
+        try{
+            //Odoslanie spravy
+            out.write("\0"+skMyLogin+"> "+skMsgField.getText()+"\n");
+            out.flush();
+            //Vymazanie obsahu pola skMsgField
+            
+            skMsgField.setText("");
+        }catch (Exception e){
+            System.out.println("Chyba "+e.getMessage());
+            System.exit(1);
+        }
+    } 
         //Sluzi na prijem sprav zo servera a vypis do okna
     class ReceiveThread extends Thread {
         //Metoda vykonavaneho vlakna
@@ -154,8 +186,19 @@ public class ChatClient extends javax.swing.JFrame {
                 //Precitam riadok zo standardneho vstupu
                 while ((line = in.readLine()) != null) {
                     //Vypisem riadok
-                  //  text.append(line+"\n");
-                }
+                    
+                    char msgCode=line.charAt(0);
+                    switch (msgCode){
+                        case 0x01:
+             //               skTextArea.append(line.substring(1));
+                            skListModel.removeAllElements();
+                            skListModel.addElement(line.substring(1));break;
+                        case 0x00:
+                            skTextArea.append(line.substring(1)+"\n");break;
+                        default:
+                            //skTextArea.append(line+"\n");break;
+                    }
+                 }
 
                 //Uzavriem streamy
                 in.close();
@@ -172,33 +215,29 @@ public class ChatClient extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ChatClient().setVisible(true);
             }
         });
     }
+
+    private String skMyLogin;
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JList jList1;
+    private javax.swing.JList jList2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextArea jTextArea4;
-    private javax.swing.JTextArea jTextArea5;
-    private javax.swing.JTextArea jTextArea7;
-    private javax.swing.JTextArea jTextArea8;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField skMsgField;
+    private javax.swing.JButton skSendButton;
+    private javax.swing.JTextArea skTextArea;
     // End of variables declaration//GEN-END:variables
-    
+    private javax.swing.DefaultListModel skListModel;
+
 }
