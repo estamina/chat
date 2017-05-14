@@ -285,6 +285,7 @@ public class ChatClient extends javax.swing.JFrame {
     class ReceiveThread extends Thread {
         //Metoda vykonavaneho vlakna
         public void run(){
+            int id;
             try{
                 String line;
                 //Precitam riadok zo standardneho vstupu
@@ -314,7 +315,7 @@ public class ChatClient extends javax.swing.JFrame {
                             //                System.out.println(line);
                         break;
                     case 2:
-                        int id=new Integer(in.readLine()).intValue();
+                        id=new Integer(in.readLine()).intValue();
                         int iusers=new Integer(in.readLine()).intValue();
                         String otheruser,othernick=null;
                         for (int i=0;i<iusers;i++){
@@ -332,6 +333,7 @@ public class ChatClient extends javax.swing.JFrame {
                         }
                         break;
                     case 0:
+                        id=new Integer(in.readLine()).intValue();
                         int lines=new Integer(in.readLine()).intValue();
                         for (int i=0; i<lines;i++) {
                             line=in.readLine();
