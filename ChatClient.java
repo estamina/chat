@@ -29,8 +29,7 @@ public class ChatClient extends javax.swing.JFrame {
     class skTab{
         javax.swing.JScrollPane scroll1, scroll2, scroll3;
         javax.swing.JTextArea text;
-        javax.swing.JSplitPane  split2, split3;
-        skSplit split1;
+        javax.swing.JSplitPane split1, split2, split3;
         javax.swing.JTextField field;
         javax.swing.JList userlist, chatlist;
         
@@ -80,7 +79,7 @@ public class ChatClient extends javax.swing.JFrame {
         }
         
         public void initComponents() {
-            split1 = new skSplit();
+            split1 = new javax.swing.JSplitPane();
             split2 = new javax.swing.JSplitPane();
             scroll1=new javax.swing.JScrollPane();
             text=new javax.swing.JTextArea();
@@ -97,14 +96,6 @@ public class ChatClient extends javax.swing.JFrame {
             split1.setDividerSize(15);
             split1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
             
-            split1.addFocusListener(new java.awt.event.FocusAdapter() {
-                public void focusGained(java.awt.event.FocusEvent evt) {
-                    split1FocusGained(evt);//jSplitPane1FocusGained(evt);
-                }
-                public void focusLost(java.awt.event.FocusEvent evt) {
-                    split1FocusLost(evt);
-                }
-            });
             split2.setDividerLocation(500);
             text.setColumns(20);
             text.setRows(5);
@@ -172,6 +163,7 @@ public class ChatClient extends javax.swing.JFrame {
                 for (int i=0;i<indicies.length;i++)
                     //debug//System.out.println("selected " + indicies[i].toString());
                     selectedusers.add(getUser(indicies[i].toString()));
+                dialog();
             }
         }
         
@@ -184,23 +176,7 @@ public class ChatClient extends javax.swing.JFrame {
          * highlights/dims users present in chat
          */
         private skUsersCellRenderer userscellrenderer;
-        
-        /**
-         * after new messages in the tab were read the tab highlight is set back to normal
-         */
-        public void split1FocusGained(java.awt.event.FocusEvent evt) {
-            int id=evt.getID();
-            System.out.println("event "+id);
-            if (id==java.awt.event.FocusEvent.FOCUS_GAINED)
-                skTabbedPane.setBackgroundAt(skTabbedPane.indexOfComponent(split1),Color.gray);
-        }
-        
-        public void split1FocusLost(java.awt.event.FocusEvent evt) {
-            int id=evt.getID();
-            System.out.println("event "+id);
-            if (id==java.awt.event.FocusEvent.FOCUS_LOST)
-                skTabbedPane.setBackgroundAt(skTabbedPane.indexOfComponent(split1),Color.gray);
-        }
+
     }
     
     //Streamy na komunikaciu
@@ -263,15 +239,6 @@ public class ChatClient extends javax.swing.JFrame {
         jSplitPane1.setDividerLocation(375);
         jSplitPane1.setDividerSize(15);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                jSplitPane1FocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                jSplitPane1FocusLost(evt);
-            }
-        });
-
         jSplitPane2.setDividerLocation(500);
         skTextArea.setColumns(20);
         skTextArea.setEditable(false);
@@ -335,15 +302,7 @@ public class ChatClient extends javax.swing.JFrame {
     private void skTabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_skTabbedPaneStateChanged
         skTabbedPane.setBackgroundAt(skTabbedPane.getSelectedIndex(),java.awt.Color.gray);
     }//GEN-LAST:event_skTabbedPaneStateChanged
-    
-    private void jSplitPane1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSplitPane1FocusLost
-// TODO add your handling code here:
-    }//GEN-LAST:event_jSplitPane1FocusLost
-    
-    private void jSplitPane1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSplitPane1FocusGained
-// TODO add your handling code here:
-    }//GEN-LAST:event_jSplitPane1FocusGained
-    
+            
     private void skUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skUserListMouseClicked
         
         if (evt.getClickCount() == 2) {
@@ -436,7 +395,8 @@ public class ChatClient extends javax.swing.JFrame {
                                 atb.text.append(line+"\n");
                             }
                             int itab=skTabbedPane.indexOfComponent(atb.split1);
-                            skTabbedPane.setBackgroundAt(itab,Color.red);
+                            if (skTabbedPane.getSelectedIndex()!=itab) skTabbedPane.setBackgroundAt(itab,Color.red);
+                            atb.userlist.repaint();
                             break;
                         case 3:
                             //number of chats
@@ -583,15 +543,9 @@ public class ChatClient extends javax.swing.JFrame {
         
         private ArrayList chatusers=new ArrayList();
     }
-    
-    public final class skSplit extends javax.swing.JSplitPane implements javax.swing.event.ChangeListener {
-        public void stateChanged(javax.swing.event.ChangeEvent evt){
-            javax.swing.JSplitPane source= (javax.swing.JSplitPane)evt.getSource();
-           // if (source.g)
-        }
+
+    public void dialog() {
+                    javax.swing.JOptionPane.showMessageDialog(this,"selected users are\nto be added to this chat");
     }
-   
-    
-    
     
 }
