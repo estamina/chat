@@ -39,7 +39,7 @@ public class ChatClient extends javax.swing.JFrame {
             out = new OutputStreamWriter(socket.getOutputStream());
             //out.write(System.getProperty("user.name","someone")+" appeared\n");
             out.write(6);
-            out.write(skMyLogin+" \n");//enter
+            out.write(skMyLogin+"\n");//enter
             out.flush();
         }catch (Exception e){
             System.out.println("Chyba "+e.getMessage());
@@ -192,19 +192,20 @@ public class ChatClient extends javax.swing.JFrame {
                     case 0x01:
          //               skTextArea.append(line.substring(1));
                         skListModel.removeAllElements();
-                        char num=(char)in.read();in.mark(1);
-                        char size=(char)in.read();in.mark(1);
-                        //while ((char size = (char)in.read()) != null) 
-                        char cbuf[]=new char[size];
-                        in.read( cbuf);
-                            skListModel.addElement(cbuf);
+                        int i=0;
+                        //while ((line = in.readLine()) != null) {System.out.print((int)line.charAt(0));System.out.print(" ");System.out.print((int)line.charAt(1));System.out.println(line+i++);}
+                        
+                        int ine=msgCode;while (ine != -1) {System.out.print(ine);System.out.print(" ");ine = in.read();}System.out.println(" nechapem");
+   //                     skListModel.addElement(line+"\n");
                         break;
                         
                     case 0x00:
-                        while ((line = in.readLine()) != null)                             skTextArea.append(line+"\n");
+                        while ((line = in.readLine()) != null) 
+                            skTextArea.append(line+"\n");
                         break;
                     default:
-                        while ((line = in.readLine()) != null)                             skTextArea.append(line+"\n");
+                        while ((line = in.readLine()) != null) 
+                            skTextArea.append(line+"\n");
 //                        skTextArea.append(line+"\n");break;
                 }
 
