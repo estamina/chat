@@ -76,9 +76,9 @@ public class ChatClient extends javax.swing.JFrame {
         skTextArea = new javax.swing.JTextArea();
         jSplitPane3 = new javax.swing.JSplitPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        userlist = new javax.swing.JList();
+        skUserList = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
-        chatlist = new javax.swing.JList();
+        skChatList = new javax.swing.JList();
         skMsgField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -99,22 +99,22 @@ public class ChatClient extends javax.swing.JFrame {
 
         jSplitPane3.setDividerLocation(200);
         jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        skList1Model=new javax.swing.DefaultListModel();
-        userlist.setModel(skList1Model
+        skUserListModel=new javax.swing.DefaultListModel();
+        skUserList.setModel(skUserListModel
         );
-        userlist.addMouseListener(new java.awt.event.MouseAdapter() {
+        skUserList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                userlistMouseClicked(evt);
+                skUserListMouseClicked(evt);
             }
         });
 
-        jScrollPane2.setViewportView(userlist);
+        jScrollPane2.setViewportView(skUserList);
 
         jSplitPane3.setTopComponent(jScrollPane2);
 
-        skList2Model=new javax.swing.DefaultListModel();
-        chatlist.setModel(skList2Model);
-        jScrollPane3.setViewportView(chatlist);
+        skChatListModel=new javax.swing.DefaultListModel();
+        skChatList.setModel(skChatListModel);
+        jScrollPane3.setViewportView(skChatList);
 
         jSplitPane3.setRightComponent(jScrollPane3);
 
@@ -151,14 +151,14 @@ public class ChatClient extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void userlistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userlistMouseClicked
+    private void skUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skUserListMouseClicked
 // TODO add your handling code here:
                  if (evt.getClickCount() == 2) {
-             int index = userlist.locationToIndex(evt.getPoint());
-             addTab(skList1Model.getElementAt(index).toString());
+             int index = skUserList.locationToIndex(evt.getPoint());
+             addTab(skUserListModel.getElementAt(index).toString());
           }
 //       addTab();
-    }//GEN-LAST:event_userlistMouseClicked
+    }//GEN-LAST:event_skUserListMouseClicked
 
     private void skMsgFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skMsgFieldActionPerformed
         // TODO add your handling code here:
@@ -167,7 +167,7 @@ public class ChatClient extends javax.swing.JFrame {
 
     private void userList(){
 
-        userlist.setModel(new javax.swing.AbstractListModel() {
+        skUserList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "user 1", "user 2","user3" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
@@ -202,13 +202,13 @@ public class ChatClient extends javax.swing.JFrame {
                 switch (msgCode){
                     case 1:
          //               skTextArea.append(line.substring(1));
-                        skList1Model.removeAllElements();
+                        skUserListModel.removeAllElements();
                         int users=new Integer(in.readLine()).intValue();
                         for (int i=0; i<users;i++) {
                             line=in.readLine();
                             if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);}
                             else line=in.readLine();
-                            skList1Model.addElement(line+"\n");
+                            skUserListModel.addElement(line+"\n");
                         }
                             //                System.out.println(line);
                         break;
@@ -254,7 +254,6 @@ public class ChatClient extends javax.swing.JFrame {
     private static LinkedList tabList;
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList chatlist;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -262,12 +261,13 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JList skChatList;
     private javax.swing.JTextField skMsgField;
     private javax.swing.JTextArea skTextArea;
-    private javax.swing.JList userlist;
+    private javax.swing.JList skUserList;
     // End of variables declaration//GEN-END:variables
-    private javax.swing.DefaultListModel skList1Model;
-    private javax.swing.DefaultListModel skList2Model;
+    private javax.swing.DefaultListModel skUserListModel;
+    private javax.swing.DefaultListModel skChatListModel;
 
     public void addTab(String name) {
  
