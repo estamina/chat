@@ -19,28 +19,37 @@ public class ChatClient extends javax.swing.JFrame {
     public static String HOST="localhost";
     public static final int CHAT_PORT=12345;
     //public static String HOST="sk16614c.siemens-pse.sk";
-
+    
     //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
-
+    
+    /**
+     * tab UI
+     */
     class skTab{
-            javax.swing.JScrollPane scroll1, scroll2, scroll3;
-            javax.swing.JTextArea text;
-            javax.swing.JSplitPane split1, split2, split3;
-            javax.swing.JTextField field;
-            javax.swing.JList userlist, chatlist;
-
-        //private LinkedList globalusers=new LinkedList();
-
+        javax.swing.JScrollPane scroll1, scroll2, scroll3;
+        javax.swing.JTextArea text;
+        javax.swing.JSplitPane split1, split2, split3;
+        javax.swing.JTextField field;
+        javax.swing.JList userlist, chatlist;
+        
         private String chatname="";
-
+        
+        /**
+         * initially by -1 server is informed that chatid was not assigned yet
+         */
         private int chatid=-1;
-
+        
+        /**
+         * for private 1 to 1 chat server is informed about participant
+         */
         private String chattobe;
-
+        
+        /**
+         * text message input is sent to server from here
+         */
         public void fieldActionPerformed(java.awt.event.ActionEvent evt) {
             try{
-                //Odoslanie spravy
                 out.write(msgIntro+"\n0\n");
                 out.write(new Integer(chatid).toString());
                 out.write("\n");
@@ -57,32 +66,18 @@ public class ChatClient extends javax.swing.JFrame {
                     } else out.write("0\n");
                 }
                 out.write(chatname+"\n");
-
+                
                 out.write("1\n"+skMyNick+"> "+field.getText()+"\n");
                 out.flush();
-                //Vymazanie obsahu pola skMsgField
-
+                
+                //clear this input field after the text message was sent
                 field.setText("");
             }catch (Exception e){
                 System.out.println("Chyba1 "+e.getMessage());
                 System.exit(1);
             }
         }
-
-        public void enterMsg() {
-            try{
-                //Odoslanie spravy
-                out.write(msgIntro+"\n0\n1\n"+skMyNick+"> "+field.getText()+"\n");
-                out.flush();
-                //Vymazanie obsahu pola skMsgField
-
-                field.setText("");
-            }catch (Exception e){
-                System.out.println("Chyba2 "+e.getMessage());
-                System.exit(1);
-            }
-        }
-
+        
         public void initComponents() {
             split1 = new javax.swing.JSplitPane();
             split2 = new javax.swing.JSplitPane();
@@ -96,59 +91,59 @@ public class ChatClient extends javax.swing.JFrame {
             field= new javax.swing.JTextField();
             userscellrenderer=new skUsersCellRenderer();
             //tb.text.setText("daco");
-
+            
             split1.setDividerLocation(375);
             split1.setDividerSize(15);
             split1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        split1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                split1FocusGained(evt);//jSplitPane1FocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                split1FocusLost(evt);
-            }
-        });
+            
+            split1.addFocusListener(new java.awt.event.FocusAdapter() {
+                public void focusGained(java.awt.event.FocusEvent evt) {
+                    split1FocusGained(evt);//jSplitPane1FocusGained(evt);
+                }
+                public void focusLost(java.awt.event.FocusEvent evt) {
+                    split1FocusLost(evt);
+                }
+            });
             split2.setDividerLocation(500);
             text.setColumns(20);
             text.setRows(5);
             text.setEditable(false);
             scroll1.setViewportView(text);
-
+            
             split2.setLeftComponent(scroll1);
-
+            
             split3.setDividerLocation(180);
             split3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
             userlist.setModel(skUserListModel);
-
+            
             userlist.setCellRenderer(userscellrenderer);
             userlist.setFixedCellHeight(10);
             userlist.setFixedCellWidth(10);
-
+            
             userlist.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     userlistMouseClicked(evt);
                 }
             });
-
+            
             scroll2.setViewportView(userlist);
-
+            
             split3.setLeftComponent(scroll2);
-
+            
             chatlist.setModel(skChatListModel);
             scroll3.setViewportView(chatlist);
-
+            
             split3.setRightComponent(scroll3);
             split2.setRightComponent(split3);
             split1.setLeftComponent(split2);
-
+            
             //tb.field.setText("tbfield");
             field.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     fieldActionPerformed(evt);
                 }
             });
-
+            
             split1.setRightComponent(field);
 /*
             split1.addFocusListener(new java.awt.event.FocusListener() {
@@ -158,62 +153,75 @@ public class ChatClient extends javax.swing.JFrame {
                 public void focusLost(FocusEvent e) {
                 }
             });
-*/
+ */
         }
-
+        
+        /**
+         * selection of users from user list
+         */
         public void userlistMouseClicked(java.awt.event.MouseEvent evt) {
-
             
-             if (evt.getClickCount() == 2) {
+            // doubleclick to initiate private 1 to 1 chat
+            if (evt.getClickCount() == 2) {
                 int index = userlist.locationToIndex(evt.getPoint());
-                 String anick=skUserListModel.getElementAt(index).toString();
-                 if (anick.compareTo(skMyNick+"\n")!=0)
+                String anick=skUserListModel.getElementAt(index).toString();
+                if (anick.compareTo(skMyNick+"\n")!=0)
                     if (findTab(getUser(anick))==null){
-                     skTab atb=addTab(anick,-1);
-                     //jTabbedPane1.setSelectedIndex(jTabbedPane1.getTabCount()-1);
-                     jTabbedPane1.setSelectedComponent(atb.split1);
+                    skTab atb=addTab(anick,-1);
+                    //alternative way: skTabbedPane.setSelectedIndex(jTabbedPane1.getTabCount()-1);
+                    skTabbedPane.setSelectedComponent(atb.split1);
                     }
-                 }//chatid is -1 while it is not assigned from server yet
-
-             selectedusers=new ArrayList();
+            }//chatid is -1 while it is not assigned from server yet
+            
+            //rightclick to select users>=1 to participate in already started chat
+            selectedusers=new ArrayList();
             if(evt.getButton()==3){
                 java.lang.Object[] indicies=userlist.getSelectedValues();
                 for (int i=0;i<indicies.length;i++)
-                    //System.out.println("selected " + indicies[i].toString());
+                    //debug//System.out.println("selected " + indicies[i].toString());
                     selectedusers.add(getUser(indicies[i].toString()));
             }
         }
-
+        
+        /**
+         * selection of users to be added into chat (by rightclick)
+         */
         private ArrayList selectedusers=null;
-
+        
+        /**
+         * highlights/dims users present in chat
+         */
         private skUsersCellRenderer userscellrenderer;
-
+        
+        /**
+         * after new messages in the tab were read the tab highlight is set back to normal
+         */
         public void split1FocusGained(java.awt.event.FocusEvent evt) {
             int id=evt.getID();
             System.out.println("event "+id);
-            if (id==java.awt.event.FocusEvent.FOCUS_GAINED) 
-                jTabbedPane1.setBackgroundAt(jTabbedPane1.indexOfComponent(split1),Color.gray);
+            if (id==java.awt.event.FocusEvent.FOCUS_GAINED)
+                skTabbedPane.setBackgroundAt(skTabbedPane.indexOfComponent(split1),Color.gray);
         }
-
+        
         public void split1FocusLost(java.awt.event.FocusEvent evt) {
             int id=evt.getID();
             System.out.println("event "+id);
-            if (id==java.awt.event.FocusEvent.FOCUS_LOST) 
-                jTabbedPane1.setBackgroundAt(jTabbedPane1.indexOfComponent(split1),Color.gray);
+            if (id==java.awt.event.FocusEvent.FOCUS_LOST)
+                skTabbedPane.setBackgroundAt(skTabbedPane.indexOfComponent(split1),Color.gray);
         }
-     }
-
+    }
+    
     //Streamy na komunikaciu
     BufferedReader in;
     OutputStreamWriter out;
-
+    
     public ChatClient(String login) {
         if (login.length()>0){skMyNick=skMyLogin=login;}else{
-        skMyNick=skMyLogin=System.getProperty("user.name","someone");}
+            skMyNick=skMyLogin=System.getProperty("user.name","someone");}
         try{
             //Vytvorenie spojenia so serverom
             socket = new Socket(HOST, CHAT_PORT);
-
+            
             //Streamy na komunikaciu
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new OutputStreamWriter(socket.getOutputStream());
@@ -229,7 +237,7 @@ public class ChatClient extends javax.swing.JFrame {
         tabList = new LinkedList();
         new skReceived().start();
     }
-
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -237,7 +245,7 @@ public class ChatClient extends javax.swing.JFrame {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        skTabbedPane = new javax.swing.JTabbedPane();
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane2 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -252,8 +260,8 @@ public class ChatClient extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(skMyNick);
         setResizable(false);
-        jTabbedPane1.setFocusCycleRoot(true);
-        jTabbedPane1.setVerifyInputWhenFocusTarget(false);
+        skTabbedPane.setFocusCycleRoot(true);
+        skTabbedPane.setVerifyInputWhenFocusTarget(false);
         jSplitPane1.setDividerLocation(375);
         jSplitPane1.setDividerSize(15);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
@@ -305,7 +313,7 @@ public class ChatClient extends javax.swing.JFrame {
         skMsgField.setEnabled(false);
         jSplitPane1.setRightComponent(skMsgField);
 
-        jTabbedPane1.addTab("!", jSplitPane1);
+        skTabbedPane.addTab("!", jSplitPane1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -313,42 +321,42 @@ public class ChatClient extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+                .add(skTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                .add(skTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void jSplitPane1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSplitPane1FocusLost
 // TODO add your handling code here:
     }//GEN-LAST:event_jSplitPane1FocusLost
-
+    
     private void jSplitPane1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jSplitPane1FocusGained
 // TODO add your handling code here:
     }//GEN-LAST:event_jSplitPane1FocusGained
-
+    
     private void skUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skUserListMouseClicked
-
-             if (evt.getClickCount() == 2) {
-                int index = skUserList.locationToIndex(evt.getPoint());
-                 String anick=skUserListModel.getElementAt(index).toString();
-                 if (anick.compareTo(skMyNick+"\n")!=0)
-                    if (findTab(getUser(anick))==null){
-                     skTab atb=addTab(anick,-1);
-                     //jTabbedPane1.setSelectedIndex(jTabbedPane1.getTabCount()-1);
-                     jTabbedPane1.setSelectedComponent(atb.split1);
-                    }
-                 }//chatid is -1 while it is not assigned from server yet
-          
+        
+        if (evt.getClickCount() == 2) {
+            int index = skUserList.locationToIndex(evt.getPoint());
+            String anick=skUserListModel.getElementAt(index).toString();
+            if (anick.compareTo(skMyNick+"\n")!=0)
+                if (findTab(getUser(anick))==null){
+                skTab atb=addTab(anick,-1);
+                //jTabbedPane1.setSelectedIndex(jTabbedPane1.getTabCount()-1);
+                skTabbedPane.setSelectedComponent(atb.split1);
+                }
+        }//chatid is -1 while it is not assigned from server yet
+        
     }//GEN-LAST:event_skUserListMouseClicked
-
+    
     private void updateUserList(){
         skUserListModel.clear();
         for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
@@ -363,87 +371,86 @@ public class ChatClient extends javax.swing.JFrame {
         }
  */
     }
-     /**
+    /**
      * thread for decoding received messages from socket
      */
     class skReceived extends Thread {
- 
+        
         public void run(){
             int id;
             skTab atb;
-
+            
             try{
                 String line;
-
+                
                 while ((line = in.readLine()) != null) {
                     while (line.compareTo(msgIntro)!=0){line = in.readLine();}
                     line = in.readLine();
                     System.out.println("msgcode:"+line);
-                int msgCode=new Integer(line).intValue();
-                switch (msgCode){
-                    case 1:
-                        skGlobalUsers.clear();
-
-                        int users=new Integer(in.readLine()).intValue();
-                        for (int i=0; i<users;i++) {
-                            skUser user=new skUser();
+                    int msgCode=new Integer(line).intValue();
+                    switch (msgCode){
+                        case 1:
+                            skGlobalUsers.clear();
+                            
+                            int users=new Integer(in.readLine()).intValue();
+                            for (int i=0; i<users;i++) {
+                                skUser user=new skUser();
+                                line=in.readLine();
+                                user.user=line;
+                                if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);} else line=in.readLine();
+                                user.nick=line;
+                                System.out.println(user.nick+" "+user.user);
+                                skGlobalUsers.add(user);
+                            }
+                            updateUserList();
+                            break;
+                        case 2:
+                            id=new Integer(in.readLine()).intValue();
+                            int iusers=new Integer(in.readLine()).intValue();
+                            String otheruser=null,othernick=null;
+                            ArrayList chatusers=new ArrayList();
+                            for (int i=0;i<iusers;i++){
+                                line=in.readLine();
+                                if(line.compareTo(skMyLogin)!=0)otheruser=line;
+                                line=in.readLine();
+                                if(line.compareTo(skMyNick)!=0)othernick=line;
+                                chatusers.add(line);
+                            }
+                            iusers--;
+                            atb=findTab(id);
+                            if (atb==null){
+                                atb=findTab(otheruser);
+                                if (atb==null) atb=addTab(othernick,id);
+                                else atb.chatid=id;
+                            }
+                            atb.userscellrenderer.chatusers=chatusers;
+                            break;
+                        case 4:
+                            id=new Integer(in.readLine()).intValue();
+                            int lines=new Integer(in.readLine()).intValue();
+                            atb=findTab(id);
+                            for (int i=0; i<lines;i++) {
+                                line=in.readLine();
+                                atb.text.append(line+"\n");
+                            }
+                            int itab=skTabbedPane.indexOfComponent(atb.split1);
+                            skTabbedPane.setBackgroundAt(itab,Color.red);
+                            break;
+                        case 3:
+                            //number of chats
                             line=in.readLine();
-                            user.user=line;
-                            if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);}
-                            else line=in.readLine();
-                            user.nick=line;
-                            System.out.println(user.nick+" "+user.user);
-                            skGlobalUsers.add(user);
-                        }
-                        updateUserList();
-                        break;
-                    case 2:
-                        id=new Integer(in.readLine()).intValue();
-                        int iusers=new Integer(in.readLine()).intValue();
-                        String otheruser=null,othernick=null;
-                        ArrayList chatusers=new ArrayList();
-                        for (int i=0;i<iusers;i++){
-                            line=in.readLine();
-                            if(line.compareTo(skMyLogin)!=0)otheruser=line;
-                            line=in.readLine();
-                            if(line.compareTo(skMyNick)!=0)othernick=line;
-                            chatusers.add(line);
-                        }
-                        iusers--;
-                        atb=findTab(id);
-                        if (atb==null){
-                            atb=findTab(otheruser);
-                            if (atb==null) atb=addTab(othernick,id);
-                            else atb.chatid=id;
-                        }
-                        atb.userscellrenderer.chatusers=chatusers;
-                        break;
-                    case 4:
-                        id=new Integer(in.readLine()).intValue();
-                        int lines=new Integer(in.readLine()).intValue();
-                        atb=findTab(id);
-                        for (int i=0; i<lines;i++) {
-                            line=in.readLine();
-                            atb.text.append(line+"\n");
-                        }
-                        int itab=jTabbedPane1.indexOfComponent(atb.split1);
-                        jTabbedPane1.setBackgroundAt(itab,Color.red);
-                        break;
-                    case 3:
-                        //number of chats
-                        line=in.readLine();
-                        id=new Integer(in.readLine()).intValue();
-                        atb=findTab(id);
-                        atb.chatname=in.readLine();
-                        atb.chattobe="";
-
-                        int ind=jTabbedPane1.indexOfComponent(atb.split1);
-                        jTabbedPane1.setTitleAt(ind,atb.chatname);
-
-                        break;
-                    default:
+                            id=new Integer(in.readLine()).intValue();
+                            atb=findTab(id);
+                            atb.chatname=in.readLine();
+                            atb.chattobe="";
+                            
+                            int ind=skTabbedPane.indexOfComponent(atb.split1);
+                            skTabbedPane.setTitleAt(ind,atb.chatname);
+                            
+                            break;
+                        default:
                             skTextArea.append("default  "+line+"\n");
-                }
+                    }
                 }
                 
                 in.close();
@@ -454,24 +461,14 @@ public class ChatClient extends javax.swing.JFrame {
             System.exit(0);
         }
     }
-
-
     /**
-     * @param args the command line arguments
+     * token to recognize a new message start
      */
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                //new ChatClient().setVisible(true);
-            }
-        });
-    }
-        String msgIntro="\6";
+    String msgIntro="\6";
     private String skMyLogin;
     private String skMyNick;
     private static LinkedList tabList;
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -479,56 +476,61 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JList skChatList;
     private javax.swing.JTextField skMsgField;
+    private javax.swing.JTabbedPane skTabbedPane;
     private javax.swing.JTextArea skTextArea;
     private javax.swing.JList skUserList;
     // End of variables declaration//GEN-END:variables
     private javax.swing.DefaultListModel skUserListModel;
     private javax.swing.DefaultListModel skChatListModel;
-
+    
     public skTab addTab(String name, int lid) {
-
-
-            skTab tb=new skTab();
-
-            tb.initComponents();
-            tb.chattobe=getUser(name);
-            tb.chatid=lid;
-            System.out.println(tb.chattobe);
-
-            //        skGlobalUsers
-            jTabbedPane1.addTab(name,tb.split1);
-
-            tabList.add(tb);
-            return tb;
-
+        
+        
+        skTab tb=new skTab();
+        
+        tb.initComponents();
+        tb.chattobe=getUser(name);
+        tb.chatid=lid;
+        System.out.println(tb.chattobe);
+        
+        skTabbedPane.addTab(name,tb.split1);
+        
+        tabList.add(tb);
+        return tb;
+        
     }
-
+    
     private LinkedList skGlobalUsers=new LinkedList();
-
+    
+    /**
+     * links user with his nickname
+     */
     public final class skUser {
         private String nick;
-
+        
         private String user;
     }
-
+    
+    /**
+     * gets user on given nickname
+     */
     public String getUser(String nick) {
         String user=null;
         for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
             skUser needle=(skUser)i.next();
-                System.out.println(needle.user+" "+needle.nick+" "+nick.trim());
+            System.out.println(needle.user+" "+needle.nick+" "+nick.trim());
             if ((needle).nick.compareTo(nick.trim())==0) {
                 user=needle.user;
-                                System.out.println(needle.user+" found "+needle.nick);
-
+                System.out.println(needle.user+" found "+needle.nick);
+                
                 break;
             }
         }
         return user;
     }
-
+    
     public skTab findTab(int lid) {
         skTab ltab=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
@@ -536,10 +538,10 @@ public class ChatClient extends javax.swing.JFrame {
             if ((ltab).chatid==lid)break;
             else ltab=null;
         }
-
+        
         return ltab;
     }
-
+    
     public skTab findTab(String user) {
         skTab ltab=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
@@ -547,13 +549,15 @@ public class ChatClient extends javax.swing.JFrame {
             if ((ltab).chattobe.compareTo(user)==0){
                 System.out.println(user+" found "+ltab.chattobe);
                 break;
-            }
-            else ltab=null;
+            } else ltab=null;
         }
-
+        
         return ltab;
     }
-
+    
+    /**
+     * renders users present in chat different way that others: renders them dimmed
+     */
     public class skUsersCellRenderer extends javax.swing.JLabel implements javax.swing.ListCellRenderer {
         public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             boolean found=false;
@@ -577,9 +581,9 @@ public class ChatClient extends javax.swing.JFrame {
         
         private ArrayList chatusers=new ArrayList();
     }
-
-
-
-
-
+    
+    
+    
+    
+    
 }
