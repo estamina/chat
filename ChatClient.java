@@ -176,7 +176,7 @@ public class ChatClient extends javax.swing.JFrame {
          * highlights/dims users present in chat
          */
         private skUsersCellRenderer userscellrenderer;
-
+        
     }
     
     //Streamy na komunikaciu
@@ -233,6 +233,11 @@ public class ChatClient extends javax.swing.JFrame {
         skTabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 skTabbedPaneStateChanged(evt);
+            }
+        });
+        skTabbedPane.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                skTabbedPaneMouseClicked(evt);
             }
         });
 
@@ -298,11 +303,27 @@ public class ChatClient extends javax.swing.JFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private void skTabbedPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skTabbedPaneMouseClicked
+        if(evt.getButton()==3){
+            javax.swing.JOptionPane.showMessageDialog(this,"leaving this chat");
+            try {
+                out.write(msgIntro+"\n9\n");
+                skTab atb=findTab((javax.swing.JSplitPane )skTabbedPane.getSelectedComponent());
+                out.write(atb.chatid+"\n");
+                out.flush();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            int itab=skTabbedPane.getSelectedIndex();
+            if (itab>0) skTabbedPane.remove(itab);
+        }
+    }//GEN-LAST:event_skTabbedPaneMouseClicked
+    
     private void skTabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_skTabbedPaneStateChanged
         skTabbedPane.setBackgroundAt(skTabbedPane.getSelectedIndex(),java.awt.Color.gray);
     }//GEN-LAST:event_skTabbedPaneStateChanged
-            
+    
     private void skUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skUserListMouseClicked
         
         if (evt.getClickCount() == 2) {
@@ -543,9 +564,22 @@ public class ChatClient extends javax.swing.JFrame {
         
         private ArrayList chatusers=new ArrayList();
     }
-
+    
     public void dialog() {
-                    javax.swing.JOptionPane.showMessageDialog(this,"selected users are\nto be added to this chat");
+        javax.swing.JOptionPane.showMessageDialog(this,"selected users are\nto be added to this chat");
+    }
+
+    public skTab findTab(javax.swing.JSplitPane splitpane) {
+        skTab ltab=null;
+        for (Iterator i=tabList.iterator();i.hasNext();){
+            ltab=(skTab)i.next();
+            if ((ltab).split1.equals(splitpane)){
+                System.out.println(" found "+ltab.chatid);
+                break;
+            } else ltab=null;
+        }
+        
+        return ltab;
     }
     
 }
