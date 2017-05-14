@@ -306,17 +306,21 @@ public class ChatClient extends javax.swing.JFrame {
     
     private void skTabbedPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skTabbedPaneMouseClicked
         if(evt.getButton()==3){
+            skTab atb=null;
             javax.swing.JOptionPane.showMessageDialog(this,"leaving this chat");
             try {
                 out.write(msgIntro+"\n9\n");
-                skTab atb=findTab((javax.swing.JSplitPane )skTabbedPane.getSelectedComponent());
+                atb=findTab((javax.swing.JSplitPane )skTabbedPane.getSelectedComponent());
                 out.write(atb.chatid+"\n");
                 out.flush();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
             int itab=skTabbedPane.getSelectedIndex();
-            if (itab>0) skTabbedPane.remove(itab);
+            if (itab>0) {
+                skTabbedPane.remove(itab);
+                if (atb!=null)tabList.remove(atb);
+            }
         }
     }//GEN-LAST:event_skTabbedPaneMouseClicked
     
