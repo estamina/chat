@@ -224,6 +224,8 @@ public class ChatClient extends javax.swing.JFrame {
         skUserListModel=new javax.swing.DefaultListModel();
         skUserList.setModel(skUserListModel
         );
+        skUserList.setFixedCellHeight(10);
+        skUserList.setFixedCellWidth(10);
         skUserList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 skUserListMouseClicked(evt);
@@ -291,15 +293,23 @@ public class ChatClient extends javax.swing.JFrame {
     }//GEN-LAST:event_skMsgFieldActionPerformed
 
     private void updateUserList(){
-        skUserListModel.removeAllElements();
+//        skUserListModel.removeAllElements();
+        skUserListModel.clear();
            // System.gc();
         skTextArea.setText("");
         for (Iterator i=skGlobalUsers.iterator();i.hasNext();){
             String nick=((skUser)i.next()).nick;
           //  skTextArea.append(nick+"\n");
-            skUserListModel.addElement(nick);
+            skUserListModel.addElement(nick+"\n");
             skUserList.ensureIndexIsVisible(skUserListModel.size());
-            skUserList.updateUI();
+    
+            String cell=null;
+            boolean t1=false,t2=false;
+            javax.swing.JLabel l1=(javax.swing.JLabel)(skUserList.getCellRenderer()).getListCellRendererComponent(skUserList,cell,skUserListModel.size(),t1,t2);
+    java.awt.Rectangle g1=l1.getBounds();
+    skTextArea.append("xy "+g1.x+" "+g1.y+" "+g1.width+" "+g1.height+"\n");
+            
+      //   skUserList.updateUI();
         }
         
         for (Enumeration e = skUserListModel.elements() ; e.hasMoreElements() ;) {
