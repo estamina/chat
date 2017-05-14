@@ -148,12 +148,16 @@ public class ChatClient extends javax.swing.JFrame {
         public void userlistMouseClicked(java.awt.event.MouseEvent evt) {
 
             
-                 if (evt.getClickCount() == 2) {
-             int index = userlist.locationToIndex(evt.getPoint());
-             String anick=skUserListModel.getElementAt(index).toString();
-             if (anick.compareTo(skMyNick+"\n")!=0)
-                if (findTab(getUser(anick))==null)
-                    addTab(anick,-1);}//chatid is -1 while it is not assigned from server yet
+             if (evt.getClickCount() == 2) {
+                int index = userlist.locationToIndex(evt.getPoint());
+                 String anick=skUserListModel.getElementAt(index).toString();
+                 if (anick.compareTo(skMyNick+"\n")!=0)
+                    if (findTab(getUser(anick))==null){
+                     tab atb=addTab(anick,-1);
+                     //jTabbedPane1.setSelectedIndex(jTabbedPane1.getTabCount()-1);
+                     jTabbedPane1.setSelectedComponent(atb.split1);
+                    }
+                 }//chatid is -1 while it is not assigned from server yet
 
              selectedusers=new ArrayList();
             if(evt.getButton()==3){
@@ -167,6 +171,12 @@ public class ChatClient extends javax.swing.JFrame {
         private ArrayList selectedusers=null;
 
         private UsersCellRenderer userscellrenderer;
+
+        public void tabGotFocus(java.awt.event.FocusEvent evt) {
+            int id=evt.getID();
+            if (id==java.awt.event.FocusEvent.FOCUS_GAINED) 
+                jTabbedPane1.setBackgroundAt(jTabbedPane1.indexOfComponent(split1),Color.gray);
+        }
      }
 
     //Streamy na komunikaciu
@@ -300,14 +310,18 @@ public class ChatClient extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void skUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_skUserListMouseClicked
-// TODO add your handling code here:
-                 if (evt.getClickCount() == 2) {
-             int index = skUserList.locationToIndex(evt.getPoint());
-             String anick=skUserListModel.getElementAt(index).toString();
-             if (anick.compareTo(skMyNick+"\n")!=0)
-                if (findTab(getUser(anick))==null)
-                    addTab(anick,-1);//chatid is -1 while it is not assigned from server yet
-          }
+
+             if (evt.getClickCount() == 2) {
+                int index = skUserList.locationToIndex(evt.getPoint());
+                 String anick=skUserListModel.getElementAt(index).toString();
+                 if (anick.compareTo(skMyNick+"\n")!=0)
+                    if (findTab(getUser(anick))==null){
+                     tab atb=addTab(anick,-1);
+                     //jTabbedPane1.setSelectedIndex(jTabbedPane1.getTabCount()-1);
+                     jTabbedPane1.setSelectedComponent(atb.split1);
+                    }
+                 }//chatid is -1 while it is not assigned from server yet
+          
     }//GEN-LAST:event_skUserListMouseClicked
 
     private void skMsgFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skMsgFieldActionPerformed
@@ -428,6 +442,8 @@ public class ChatClient extends javax.swing.JFrame {
                             line=in.readLine();
                             atb.text.append(line+"\n");
                         }
+                        int itab=jTabbedPane1.indexOfComponent(atb.split1);
+                        jTabbedPane1.setBackgroundAt(itab,Color.red);
                         break;
                     case 3:
                         //num of chats
