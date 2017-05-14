@@ -28,8 +28,8 @@ public class ChatClient extends javax.swing.JFrame {
     public ChatClient() {}
     
     public ChatClient(String login) {
-        if (login.length()>0){skMyLogin=login;}else{
-        skMyLogin=System.getProperty("user.name","someone");}
+        if (login.length()>0){skMyNick=skMyLogin=login;}else{
+        skMyNick=skMyLogin=System.getProperty("user.name","someone");}
         try{
             //Vytvorenie spojenia so serverom
             socket = new Socket(HOST, CHAT_PORT);
@@ -71,7 +71,7 @@ public class ChatClient extends javax.swing.JFrame {
         skSendButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(skMyLogin);
+        setTitle(skMyNick);
         setResizable(false);
         jTabbedPane1.setVerifyInputWhenFocusTarget(false);
         jSplitPane1.setDividerLocation(500);
@@ -167,7 +167,7 @@ public class ChatClient extends javax.swing.JFrame {
      private void enterMsg(){
         try{
             //Odoslanie spravy
-            out.write("0\n1\n"+skMyLogin+"> "+skMsgField.getText()+"\n");
+            out.write("0\n1\n"+skMyNick+"> "+skMsgField.getText()+"\n");
             out.flush();
             //Vymazanie obsahu pola skMsgField
             
@@ -195,7 +195,9 @@ public class ChatClient extends javax.swing.JFrame {
                         skListModel.removeAllElements();
                         int users=new Integer(in.readLine()).intValue();
                         for (int i=0; i<users;i++) {
-                            line=in.readLine();                                       
+                            line=in.readLine();
+                            if (line.compareTo(skMyLogin)==0){skMyNick=line=in.readLine();setTitle(skMyNick);}
+                            else line=in.readLine();
                             skListModel.addElement(line+"\n");                        
                         }
                             //                System.out.println(line);
@@ -253,5 +255,7 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.JTextArea skTextArea;
     // End of variables declaration//GEN-END:variables
     private javax.swing.DefaultListModel skListModel;
+
+    private String skMyNick;
 
 }
