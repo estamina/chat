@@ -318,7 +318,7 @@ public class ChatClient extends javax.swing.JFrame {
                     case 2:
                         id=new Integer(in.readLine()).intValue();
                         int iusers=new Integer(in.readLine()).intValue();
-                        String otheruser,othernick=null;
+                        String otheruser=null,othernick=null;
                         for (int i=0;i<iusers;i++){
                             line=in.readLine();
                             if(line.compareTo(skMyLogin)!=0)otheruser=line;
@@ -328,7 +328,7 @@ public class ChatClient extends javax.swing.JFrame {
                         iusers--;
                         atb=findTab(id);
                         if (atb==null){
-                            atb=findTab(othernick);
+                            atb=findTab(otheruser);
                             if (atb==null) addTab(othernick,id);
                             else atb.chatid=id;
                         }
@@ -445,16 +445,21 @@ public class ChatClient extends javax.swing.JFrame {
         for (Iterator i=tabList.iterator();i.hasNext();){
             atb=(tab)i.next();
             if ((atb).chatid==id)break;
+            else atb=null;
         }
         
         return atb;
     }
 
-    public tab findTab(String nick) {
+    public tab findTab(String user) {
         tab atb=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
             atb=(tab)i.next();
-            if ((atb).chattobe.compareTo(nick)==0)break;
+            if ((atb).chattobe.compareTo(user)==0){
+                System.out.println(user+" found "+atb.chattobe);                
+                break;
+            }
+            else atb=null;
         }
         
         return atb;
