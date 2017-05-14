@@ -102,6 +102,12 @@ public class ChatClient extends javax.swing.JFrame {
         skList1Model=new javax.swing.DefaultListModel();
         userlist.setModel(skList1Model
         );
+        userlist.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                userlistMouseClicked(evt);
+            }
+        });
+
         jScrollPane2.setViewportView(userlist);
 
         jSplitPane3.setTopComponent(jScrollPane2);
@@ -144,6 +150,15 @@ public class ChatClient extends javax.swing.JFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void userlistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userlistMouseClicked
+// TODO add your handling code here:
+                 if (evt.getClickCount() == 2) {
+             int index = userlist.locationToIndex(evt.getPoint());
+             addTab(skList1Model.getElementAt(index).toString());
+          }
+//       addTab();
+    }//GEN-LAST:event_userlistMouseClicked
 
     private void skMsgFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skMsgFieldActionPerformed
         // TODO add your handling code here:
@@ -254,7 +269,7 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.DefaultListModel skList1Model;
     private javax.swing.DefaultListModel skList2Model;
 
-    public void addTab() {
+    public void addTab(String name) {
  
 
             tab tb=new tab();
@@ -299,7 +314,7 @@ public class ChatClient extends javax.swing.JFrame {
             tb.field.setText("tbfield");
             tb.split1.setRightComponent(tb.field);
             
-            jTabbedPane1.addTab("tb",tb.split1);
+            jTabbedPane1.addTab(name,tb.split1);
             tabList.add(tb);
         
     }

@@ -125,6 +125,9 @@
                               <Connection code="skList1Model&#xa;" type="code"/>
                             </Property>
                           </Properties>
+                          <Events>
+                            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="userlistMouseClicked"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
