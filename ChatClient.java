@@ -40,7 +40,7 @@ public class ChatClient extends javax.swing.JFrame {
         public void fieldActionPerformed(java.awt.event.ActionEvent evt) {
             try{
                 //Odoslanie spravy
-                out.write("0\n");
+                out.write(msgIntro+"\n0\n");
                 out.write(new Integer(chatid).toString());
                 out.write("\n");
                 out.write("1\n");
@@ -62,7 +62,7 @@ public class ChatClient extends javax.swing.JFrame {
         public void enterMsg() {
             try{
                 //Odoslanie spravy
-                out.write("0\n1\n"+skMyNick+"> "+field.getText()+"\n");
+                out.write(msgIntro+"\n0\n1\n"+skMyNick+"> "+field.getText()+"\n");
                 out.flush();
                 //Vymazanie obsahu pola skMsgField
 
@@ -142,7 +142,7 @@ public class ChatClient extends javax.swing.JFrame {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new OutputStreamWriter(socket.getOutputStream());
             //out.write(System.getProperty("user.name","someone")+" appeared\n");
-            out.write("6\n1\n");
+            out.write(msgIntro+"\n6\n1\n");
             out.write(skMyLogin+"\n");//enter
             out.flush();
         }catch (Exception e){
@@ -216,6 +216,7 @@ public class ChatClient extends javax.swing.JFrame {
 
         jSplitPane1.setLeftComponent(jSplitPane2);
 
+        skMsgField.setEnabled(false);
         skMsgField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 skMsgFieldActionPerformed(evt);
@@ -224,7 +225,7 @@ public class ChatClient extends javax.swing.JFrame {
 
         jSplitPane1.setRightComponent(skMsgField);
 
-        jTabbedPane1.addTab("info", jSplitPane1);
+        jTabbedPane1.addTab("!", jSplitPane1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -271,7 +272,7 @@ public class ChatClient extends javax.swing.JFrame {
      private void enterMsg(){
         try{
             //Odoslanie spravy
-            out.write("0\n1\n"+skMyNick+"> "+skMsgField.getText()+"\n");
+            out.write(msgIntro+"\n0\n1\n"+skMyNick+"> "+skMsgField.getText()+"\n");
             out.flush();
             //Vymazanie obsahu pola skMsgField
 
@@ -287,12 +288,15 @@ public class ChatClient extends javax.swing.JFrame {
         public void run(){
             int id;
             tab atb;
+    
             try{
                 String line;
                 //Precitam riadok zo standardneho vstupu
 
                     //Vypisem riadok
                 while ((line = in.readLine()) != null) {
+                    while (line.compareTo(msgIntro)!=0){line = in.readLine();}
+                    line = in.readLine();
                     System.out.println("msgcode:"+line);
                     //line=in.readLine();
                 int msgCode=new Integer(line).intValue();
@@ -370,7 +374,7 @@ public class ChatClient extends javax.swing.JFrame {
             }
         });
     }
-
+        String msgIntro="\6";
     private String skMyLogin;
     private String skMyNick;
     private static LinkedList tabList;
@@ -441,28 +445,28 @@ public class ChatClient extends javax.swing.JFrame {
     }
 
     public tab findTab(int id) {
-        tab atb=null;
+        tab ltab=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
-            atb=(tab)i.next();
-            if ((atb).chatid==id)break;
-            else atb=null;
+            ltab=(tab)i.next();
+            if ((ltab).chatid==id)break;
+            else ltab=null;
         }
         
-        return atb;
+        return ltab;
     }
 
     public tab findTab(String user) {
-        tab atb=null;
+        tab ltab=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
-            atb=(tab)i.next();
-            if ((atb).chattobe.compareTo(user)==0){
-                System.out.println(user+" found "+atb.chattobe);                
+            ltab=(tab)i.next();
+            if ((ltab).chattobe.compareTo(user)==0){
+                System.out.println(user+" found "+ltab.chattobe);                
                 break;
             }
-            else atb=null;
+            else ltab=null;
         }
         
-        return atb;
+        return ltab;
     }
 
 
