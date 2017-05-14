@@ -52,6 +52,7 @@ public class ChatClient extends javax.swing.JFrame {
                         for (int i=0;i<selectedusers.size();i++){
                             out.write(selectedusers.get(i).toString()+"\n");
                         }
+                        selectedusers=null;
                     } else out.write("0\n");
                 }
                 out.write(chatname+"\n");
