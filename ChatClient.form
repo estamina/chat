@@ -94,7 +94,7 @@
                         <Property name="columns" type="int" value="20"/>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="rows" type="int" value="5"/>
-                        <Property name="text" type="java.lang.String" value="just click on listed chat or user to start&#xa;"/>
+                        <Property name="text" type="java.lang.String" value="&#xa;&#xa;&#xa;&#x9;1. to start private chat  doubleclick on a user&#xa;&#xa;&#x9;2. to add another users to chat select them and rightclick&#xa;&#xa;&#x9;3. to leave a chat rightclick on chat tab&#xa;"/>
                       </Properties>
                     </Component>
                   </SubComponents>

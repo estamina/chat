@@ -17,8 +17,8 @@ import java.io.*;
 public class ChatClient extends javax.swing.JFrame {
     //public static final int CHAT_PORT=12345;
     public static String HOST="localhost";
-    public static final int CHAT_PORT=12345;
-    //public static String HOST="sk16614c.siemens-pse.sk";
+    public static int CHAT_PORT=12345;
+    //public static String HOST="sk16356c.siemens-pse.sk";
     
     //Pomocou tohto socketu komunikujem so serverom
     Socket socket;
@@ -160,10 +160,33 @@ public class ChatClient extends javax.swing.JFrame {
             selectedusers=new ArrayList();
             if(evt.getButton()==3){
                 java.lang.Object[] indicies=userlist.getSelectedValues();
-                for (int i=0;i<indicies.length;i++)
+                StringBuffer usersline=new StringBuffer();
+                for (int i=0;i<indicies.length;i++){
                     //debug//System.out.println("selected " + indicies[i].toString());
-                    selectedusers.add(getUser(indicies[i].toString()));
+                    String nickname=indicies[i].toString();
+                    usersline.append(nickname.trim()+" ");
+                    selectedusers.add(getUser(nickname));
+                }
+                usersline.append("added by "+skMyNick+"\n");
                 dialog();
+                try {
+                    out.write(msgIntro+"\n0\n");
+                    out.write(new Integer(chatid).toString());
+                    out.write("\n");
+                    if (selectedusers!=null){
+                        out.write(selectedusers.size()+"\n");
+                        for (int i=0;i<selectedusers.size();i++){
+                            out.write(selectedusers.get(i).toString()+"\n");
+                        }
+                        selectedusers=null;
+                    } else out.write("0\n");
+                    out.write(chatname+"\n");
+                    out.write("1\n"+usersline.toString());
+                    out.flush();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                
             }
         }
         
@@ -187,6 +210,9 @@ public class ChatClient extends javax.swing.JFrame {
         if (login.length()>0){skMyNick=skMyLogin=login;}else{
             skMyNick=skMyLogin=System.getProperty("user.name","someone");}
         try{
+            BufferedReader setfile=new BufferedReader(new FileReader("setup.ini"));;
+            CHAT_PORT=new Integer(setfile.readLine()).intValue();
+            setfile.close();
             //Vytvorenie spojenia so serverom
             socket = new Socket(HOST, CHAT_PORT);
             
@@ -248,7 +274,7 @@ public class ChatClient extends javax.swing.JFrame {
         skTextArea.setColumns(20);
         skTextArea.setEditable(false);
         skTextArea.setRows(5);
-        skTextArea.setText("just click on listed chat or user to start\n");
+        skTextArea.setText("\n\n\n\t1. to start private chat  doubleclick on a user\n\n\t2. to add another users to chat select them and rightclick\n\n\t3. to leave a chat rightclick on chat tab\n");
         jScrollPane1.setViewportView(skTextArea);
 
         jSplitPane2.setLeftComponent(jScrollPane1);
@@ -572,7 +598,7 @@ public class ChatClient extends javax.swing.JFrame {
     public void dialog() {
         javax.swing.JOptionPane.showMessageDialog(this,"selected users are\nto be added to this chat");
     }
-
+    
     public skTab findTab(javax.swing.JSplitPane splitpane) {
         skTab ltab=null;
         for (Iterator i=tabList.iterator();i.hasNext();){
