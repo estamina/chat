@@ -249,7 +249,7 @@ public class ChatClient extends javax.swing.JFrame {
 // TODO add your handling code here:
                  if (evt.getClickCount() == 2) {
              int index = skUserList.locationToIndex(evt.getPoint());
-             addTab(skUserListModel.getElementAt(index).toString());
+             addTab(skUserListModel.getElementAt(index).toString(),-1);
           }
 //       addTab();
     }//GEN-LAST:event_skUserListMouseClicked
@@ -327,7 +327,8 @@ public class ChatClient extends javax.swing.JFrame {
                         tab atb=findTab(id);
                         if (atb==null){
                             atb=findTab(othernick);
-                            if (atb==null) addTab(othernick);
+                            if (atb==null) addTab(othernick,id);
+                            else atb.chatid=id;
                         }
                         break;
                     case 0:
@@ -386,7 +387,7 @@ public class ChatClient extends javax.swing.JFrame {
     private javax.swing.DefaultListModel skUserListModel;
     private javax.swing.DefaultListModel skChatListModel;
 
-    public void addTab(String name) {
+    public void addTab(String name, int id) {
  
 
             tab tb=new tab();
@@ -394,6 +395,7 @@ public class ChatClient extends javax.swing.JFrame {
             tb.initComponents();
             //tb.chatname=name;
             tb.chattobe=getUser(name);
+            tb.chatid=id;
             System.out.println(tb.chattobe);
             
             //        skGlobalUsers
