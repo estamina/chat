@@ -400,6 +400,7 @@ public class ChatClient extends javax.swing.JFrame {
                         id=new Integer(in.readLine()).intValue();
                         atb=findTab(id);
                         atb.chatname=in.readLine();
+                        atb.chattobe="";
                         
                         int ind=jTabbedPane1.indexOfComponent(atb.split1);
                         jTabbedPane1.setTitleAt(ind,atb.chatname);
