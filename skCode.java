@@ -27,8 +27,14 @@ public class skCode {
 
     public static final int ENTER = 6;
 
+    public static final int EXIT = 7;// no need for this
+    
+    public static final int CHAT_ENTER = 8;
+
     public static final int CHAT_EXIT = 9;
     
+    public static final int CHAT_RENAME = 10;
+
     public static final String MSGINTRO = "\6";
     
 }
